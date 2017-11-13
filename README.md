@@ -72,6 +72,62 @@ Or you can take charge and draw them yourself simply by reading out `value`:
     love.graphics.print(string.format("%d", roller.value), roller.left, roller.top)
   end
 
+# aperture
+
+The aperture provides a constrained view of a larger drawing. Like the photographer who touches the tips of her thumbs together, framing a shot.
+
+The aperture scrolls what can be seen, up and down, or left and right.
+
+Call the `new` function with a table of parameters:
+
+  local picturescroll = require("aperture"):new{
+    top=10,           -- position on screen
+    left=220,
+    width=200,        -- size of the aperture
+    height=210,
+    pages=3,          -- number of pages available (the size of each equals the width/height)
+    duration=0.25,    -- time in seconds to animate the scroll
+    easing="linear",  -- scroll easing method
+    landscape=true    -- true scrolls horizontally
+  }
+
+### aperture methods
+
+Requires update calls to process scroll animations.
+
+`aperture:update(dt)`
+
+Pass mouse moved events to the aperture. This is how it knows when the focus is on them.
+
+`aperture:mousemoved(x, y, dx, dy, istouch)`
+
+Programatically scroll to a page. The parameter is clamped for your safety.
+
+`aperture:scrollTo(page number)`
+
+Programatically scroll an aperture left or up. These are synonymns and either can be used.
+
+`aperture:scrollLeft()` and `aperture:scrollUp()`
+
+Programatically scroll an aperture right or down. These are synonymns and either can be used.
+
+`aperture:scrollright()` and `aperture:scrollDown()`
+
+`aperture:apply()` begin transformation for drawing.
+
+`aperture:release()` ends transformation.
+
+  function love.draw()
+    aperture:apply()
+    ... your drawing here
+    aperture:release()
+  end
+
+`aperture:pointIn(x, y, rect)` Tests if the given screen points `x` and `y` fall within the given `rect` bounds.
+
+Points x and y are screen coordinates, that is: those received from the mouse pressed event.
+
+Rect is a table with the `top`, `left`, `width` and `height` keys. The values must be relative to the aperture position, that is: point (0,0) is the top-left corner within the aperture, wherever it may be drawn on the screen.
 
 
 # license

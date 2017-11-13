@@ -23,8 +23,11 @@ local yellow = {255, 255, 64}
 -- the data model where player scores live
 local scoredata = { player1=0, player2=0 }
 
--- demonstrates the labelcollection
+-- demonstrates the digit roller collection
 local scorecounters = require("digitroller"):new()
+
+-- tracks a sine value for effect
+local sinecounter = 0
 
 -- watch player scores for changes
 scorecounters:add{
@@ -45,65 +48,95 @@ scorecounters:add{
   top=320
 }
 
--- demonstrates the scroll manager
-local loremscroll = require("scrollmanager"):new{
-  top=10, left=10, width=200, height=210,
+-- demonstrates the aperture
+local loremscroll = require("aperture"):new{
+  top=10,
+  left=10,
+  width=200,
+  height=200,
   pages=4,
   duration=1,
   easing="inOutQuad"
 }
 
-local picturescroll = require("scrollmanager"):new{
-  top=10, left=220, width=200, height=210,
+local picturescroll = require("aperture"):new{
+  top=10,
+  left=220,
+  width=200,
+  height=200,
   pages=3,
   duration=0.25,
-  easing="linear"
+  easing="linear",
+  landscape=true    -- scrolls horizontally
 }
 
-local clickscroll = require("scrollmanager"):new{
-  top=10, left=430, width=200, height=210,
+local clickscroll = require("aperture"):new{
+  top=10,
+  left=430,
+  width=200,
+  height=200,
   pages=2
 }
 
-local testbutton = {left=30, top=240, width=120, height=40, counter=1}
+-- defines the area for our test button.
+-- The button will live inside one of our apertures, as such
+-- these positions are relative to the aperture's position.
+local testbutton = {left=30, top=240, width=120, height=40, counter=0}
 
 function love.keypressed(key)
   if key == "escape" then
     love.event.quit()
+  elseif key == "r" then
+    -- scroll the apertures programatically.
+    -- the page parameter is clamped for us so we can
+    -- set an out-of-bounds page without fretting.
+    loremscroll:scrollTo(math.random(1, 4))
+    picturescroll:scrollTo(math.random(1, 4))
+    clickscroll:scrollTo(math.random(1, 4))
   end
 end
 
 function love.wheelmoved(x, y)
   if y > 0 then
-    loremscroll:scrollup()
-    picturescroll:scrollup()
-    clickscroll:scrollup()
+    loremscroll:scrollUp()
+    picturescroll:scrollLeft()  -- a synonymn for scrollUp
+    clickscroll:scrollUp()
   else
-    loremscroll:scrolldown()
-    picturescroll:scrolldown()
-    clickscroll:scrolldown()
+    loremscroll:scrollDown()
+    picturescroll:scrollRight() -- a synonymn for scrollDown
+    clickscroll:scrollDown()
   end
 end
 
+-- Pass mouse movement to the apertures. This is how they know
+-- when the focus is on them.
 function love.mousemoved(x, y, dx, dy, istouch)
   loremscroll:mousemoved(x, y, dx, dy, istouch)
   picturescroll:mousemoved(x, y, dx, dy, istouch)
   clickscroll:mousemoved(x, y, dx, dy, istouch)
 end
 
-function love.mousepressed(x, y)
-  if clickscroll:pointIn(x, y, testbutton) then
-    testbutton.counter = testbutton.counter + 1
-    local increase = math.random(10, 100)
-    scoredata.player1 = scoredata.player1 + increase
-    scoredata.player2 = scoredata.player2 + increase
-    print("button clicked")
+-- Tests clicking inside an aperture
+function love.mousepressed(x, y, button, istouch)
+
+  if button == 1 then
+
+    if clickscroll:pointIn(x, y, testbutton) then
+      testbutton.counter = testbutton.counter + 1
+      local increase = math.random(10, 100)
+      scoredata.player1 = scoredata.player1 + increase
+      scoredata.player2 = scoredata.player2 + increase
+    end
+
   end
+
   -- you can also call this to get the point in screen coordinates
   -- x, y = clickscroll:pointToScreen(x, y)
+
 end
 
 function love.update(dt)
+  sinecounter = sinecounter + dt
   loremscroll:update(dt)
   picturescroll:update(dt)
   clickscroll:update(dt)
@@ -114,6 +147,13 @@ function love.draw()
   drawLorem()
   drawPictures()
   drawClicks()
+
+  love.graphics.printf([[The aperture provides a constrained view of a larger drawing. Like the photographer who touches the tips of her thumbs together, framing a shot. The aperture scrolls what can be seen using transforms. There is no underlying canvas involved.
+
+The digit roller simply watches a value on a table for changes. The roller then interpolates the displayed value via a tween, so it appears to count up or down.
+
+You may press 'r' to programmatically randomize the pages to display.]], 100, 300, 400)
+
 end
 
 function drawLorem()
@@ -126,7 +166,7 @@ function drawLorem()
     loremscroll.width,
     loremscroll.height)
 
-  -- apply the scroll transform
+  -- apply the transform
   loremscroll:apply()
 
   -- print lorem text
@@ -137,7 +177,7 @@ function drawLorem()
   In sodales ullamcorper lorem vitae ornare. Integer et felis at est tincidunt consequat. Praesent tellus tellus, imperdiet sed nunc blandit, accumsan accumsan augue. Nullam id ante consequat, viverra tellus eu, efficitur nulla. Nulla ligula justo, commodo ut arcu sit amet, sollicitudin hendrerit magna. Duis porta pulvinar faucibus. Praesent accumsan semper purus ut interdum. Aenean commodo at magna nec tincidunt. Morbi tortor nisi, pulvinar scelerisque magna quis, bibendum hendrerit turpis. Vestibulum vel euismod libero, vel bibendum ipsum. Cras efficitur sapien id turpis ornare consectetur.]],
   10, 10, 180, "center" )
 
-  -- release the scroll transform
+  -- release the transform
   loremscroll:release()
 
   -- draw a nice box around our text
@@ -158,24 +198,34 @@ end
 
 function drawPictures()
 
-  -- apply the scroll transform
+  -- apply the transform
   picturescroll:apply()
 
-  -- draw some pictures
+  -- draw a hovering triangle
   love.graphics.setColor(red)
-  love.graphics.polygon("fill", 60, 80, 160, 80, 110, 180)
-  love.graphics.setColor(green)
-  love.graphics.circle("fill", 100, 330, 40)
-  love.graphics.circle("line", 100, 330, 60)
-  love.graphics.setColor(blue)
-  love.graphics.rectangle("fill", 20, 440, 160, 160)
-  love.graphics.setColor(white)
-  love.graphics.circle("fill", 100, 520, 20)
+  love.graphics.polygon("fill",
+    60+10*math.sin(sinecounter), 80+10*math.cos(sinecounter),
+    160+10*math.sin(sinecounter), 80+10*math.sin(sinecounter),
+    110+10*math.cos(sinecounter), 180+20*math.sin(sinecounter))
 
-  -- release the scroll transform
+  -- draw a hydrogen atom
+  love.graphics.setColor(green)
+  love.graphics.print("Hydrogen", 270, 30)
+  love.graphics.circle("fill", 300, 130, 20)
+  love.graphics.circle("line", 300, 130, 60)
+  love.graphics.setColor(yellow)
+  love.graphics.circle("fill", 300+60*math.cos(sinecounter), 130+60*math.sin(sinecounter), 4)
+
+  -- draw a bobbing ball
+  love.graphics.setColor(blue)
+  love.graphics.rectangle("fill", 400, 40, 200, 180)
+  love.graphics.setColor(white)
+  love.graphics.circle("fill", 500+(40*math.cos(sinecounter*.1)), 45+(8*math.sin(sinecounter)), 20)
+
+  -- release the transform
   picturescroll:release()
 
-  -- draw a nice box around our text
+  -- draw a nice box around our pictures
   love.graphics.setColor(white)
   love.graphics.rectangle("line",
     picturescroll.left,
@@ -193,22 +243,34 @@ end
 
 function drawClicks()
 
-  -- apply the scroll transform
+  -- apply the transform
   clickscroll:apply()
 
-  love.graphics.setColor(yellow)
+  -- print helpful text
+  love.graphics.setColor(white)
   love.graphics.printf("scroll down to test clicking a point in a scrolled area", 10, 60, 150)
-  love.graphics.print(string.format("click me (%d)", testbutton.counter),
-    testbutton.left+10, testbutton.top+10)
-  love.graphics.rectangle("line", testbutton.left, testbutton.top, testbutton.width, testbutton.height)
 
-  -- draw the labelcounter demo right inside this scroll demo
+  -- draw a really ugly button
+  love.graphics.setColor(white)
+  love.graphics.rectangle("fill", testbutton.left, testbutton.top,
+    testbutton.width, testbutton.height)
+
+  love.graphics.setColor(yellow)
+  love.graphics.rectangle("line", testbutton.left, testbutton.top,
+    testbutton.width, testbutton.height)
+
+  love.graphics.setColor(black)
+  love.graphics.print(string.format("clicked %d times", testbutton.counter),
+    testbutton.left+10, testbutton.top+14)
+
+  -- draw the digit roller demo right inside this aperture.
+  love.graphics.setColor(white)
   scorecounters:draw()
 
-  -- release the scroll transform
+  -- release the transform
   clickscroll:release()
 
-  -- draw a nice box around our text
+  -- draw a nice box around our clicks
   love.graphics.setColor(white)
   love.graphics.rectangle("line",
     clickscroll.left,
