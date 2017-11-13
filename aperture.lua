@@ -13,8 +13,6 @@
    along with this program. If not, see http://www.gnu.org/licenses/.
 ]]--
 
--- provides scroll functionality
-
 local module = {}
 local tween = require("tween")
 
@@ -24,7 +22,7 @@ local scroll_mt = {}
 function module:new(args)
 
   if not args.top or not args.left or not args.width or not args.height then
-    error("A scroll panel must have a top, left, width and height")
+    error("Aperture must have a top, left, width and height")
   end
 
   local instance = {}
@@ -35,8 +33,11 @@ function module:new(args)
   end
 
   -- set defaults
+  instance.duration = instance.duration or 1
   instance.pages = instance.pages or 1
-  instance.offset = 0
+  instance.easing = instance.easing or "outCubic"
+  instance.yoffset = 0
+  instance.xoffset = 0
   instance.page = 1
 
   -- apply instance functions
@@ -54,7 +55,7 @@ function scroll_mt:update(dt)
 end
 
 function scroll_mt:pointToScreen(x, y)
-  return x - self.left, y - self.top - self.offset
+  return x - self.left - self.xoffset, y - self.top - self.yoffset
 end
 
 function scroll_mt:pointIn(x, y, rect)
@@ -84,8 +85,8 @@ function scroll_mt:apply()
 
   -- scroll all drawing
   love.graphics.push()
-  --love.graphics.translate( 0, self.offset )
-  love.graphics.translate( self.left, self.top + self.offset )
+
+  love.graphics.translate( self.left + self.xoffset, self.top + self.yoffset )
 
 end
 
@@ -94,7 +95,7 @@ function scroll_mt:release()
   love.graphics.setStencilTest()
 end
 
-function scroll_mt:scrollup()
+function scroll_mt:scrollUp()
   if self.complete and self.active then
     self.complete = false
     self.page = math.max(1, self.page - 1)
@@ -102,12 +103,32 @@ function scroll_mt:scrollup()
   end
 end
 
-function scroll_mt:scrolldown()
+function scroll_mt:scrollDown()
   if self.complete and self.active then
     self.complete = false
     self.page = math.min(self.pages, self.page + 1)
     self:applytween()
   end
+end
+
+function scroll_mt:scrollLeft()
+  self:scrollUp()
+end
+
+function scroll_mt:scrollRight()
+  self:scrollDown()
+end
+
+function scroll_mt:scrollTo(page)
+
+  -- clamp the desired page
+  page = math.min(self.pages, math.max(1, page))
+
+  if self.page ~= page then
+    self.page = page
+    self:applytween()
+  end
+
 end
 
 function scroll_mt:mousemoved(x, y, dx, dy, istouch)
@@ -118,12 +139,23 @@ function scroll_mt:mousemoved(x, y, dx, dy, istouch)
 end
 
 function scroll_mt:applytween()
-self.tween = tween.new(
-  self.duration or .5,
-  self,
-  { offset=(self.page-1) * self.height * -1 },
-  self.easing or "outCubic"
-  )
+
+  local xo = (self.page-1) * self.width * -1
+  local yo = (self.page-1) * self.height * -1
+
+  if self.landscape then
+    yo = 0
+  else
+    xo = 0
+  end
+
+  self.tween = tween.new(
+    self.duration,
+    self,
+    { xoffset=xo, yoffset=yo },
+    self.easing
+    )
+
 end
 
 return module
