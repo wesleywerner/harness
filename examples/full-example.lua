@@ -82,7 +82,14 @@ local clickscroll = require("harness.aperture"):new{
 -- defines the area for our test button.
 -- The button will live inside one of our apertures, as such
 -- these positions are relative to the aperture's position.
-local testbutton = {left=30, top=240, width=120, height=40, counter=0}
+local hotspot = require("harness.hotspot")
+local testbutton = hotspot:new {
+  left=30,
+  top=240,
+  width=120,
+  height=40,
+  counter=0
+  }
 
 function love.keypressed(key)
   if key == "escape" then
