@@ -24,7 +24,7 @@ local yellow = {255, 255, 64}
 local scoredata = { player1=0, player2=0 }
 
 -- demonstrates the digit roller collection
-local scorecounters = require("digitroller"):new()
+local scorecounters = require("harness.digitroller"):new()
 
 -- tracks a sine value for effect
 local sinecounter = 0
@@ -49,7 +49,7 @@ scorecounters:add{
 }
 
 -- demonstrates the aperture
-local loremscroll = require("aperture"):new{
+local loremscroll = require("harness.aperture"):new{
   top=10,
   left=10,
   width=200,
@@ -60,7 +60,7 @@ local loremscroll = require("aperture"):new{
   factor=0.5
 }
 
-local picturescroll = require("aperture"):new{
+local picturescroll = require("harness.aperture"):new{
   top=10,
   left=220,
   width=200,
@@ -71,7 +71,7 @@ local picturescroll = require("aperture"):new{
   landscape=true    -- scrolls horizontally
 }
 
-local clickscroll = require("aperture"):new{
+local clickscroll = require("harness.aperture"):new{
   top=10,
   left=430,
   width=200,
