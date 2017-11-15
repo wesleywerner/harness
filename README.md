@@ -1,6 +1,23 @@
 # harness
 
-Things to help scaffold your LÖVE user experience.
+Harness is a Lua toolkit to help scaffold your LÖVE user experience.
+
+Harness uses [Kikito's tween library](https://github.com/kikito/tween.lua).
+
+### running the examples
+
+Symlink (or copy) harness into the examples directory.
+
+    ln -s $(pwd) examples/
+
+Then symlink the example you want as `main.lua`
+
+    ln -s full-example.lua main.lua
+
+Now you can run it
+
+    love .
+
 
 # digit roller
 
