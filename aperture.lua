@@ -36,6 +36,7 @@ function module:new(args)
   instance.duration = instance.duration or 1
   instance.pages = instance.pages or 1
   instance.easing = instance.easing or "outCubic"
+  instance.factor = instance.factor or 1
   instance.yoffset = 0
   instance.xoffset = 0
   instance.page = 1
@@ -98,7 +99,7 @@ end
 function scroll_mt:scrollUp()
   if self.complete and self.active then
     self.complete = false
-    self.page = math.max(1, self.page - 1)
+    self.page = math.max(1, self.page - self.factor)
     self:applytween()
   end
 end
@@ -106,7 +107,7 @@ end
 function scroll_mt:scrollDown()
   if self.complete and self.active then
     self.complete = false
-    self.page = math.min(self.pages, self.page + 1)
+    self.page = math.min(self.pages, self.page + self.factor)
     self:applytween()
   end
 end
@@ -143,18 +144,14 @@ function scroll_mt:applytween()
   local xo = (self.page-1) * self.width * -1
   local yo = (self.page-1) * self.height * -1
 
+  -- limit the tween direction depending on orientation
   if self.landscape then
     yo = 0
   else
     xo = 0
   end
 
-  self.tween = tween.new(
-    self.duration,
-    self,
-    { xoffset=xo, yoffset=yo },
-    self.easing
-    )
+  self.tween = tween.new(self.duration, self, { xoffset=xo, yoffset=yo }, self.easing)
 
 end
 
