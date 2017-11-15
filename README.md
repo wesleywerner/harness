@@ -201,6 +201,8 @@ _figure 1 shows some text drawn to the screen. The top frame indicates the apert
 
 `rect` is a table with the `top`, `left`, `width` and `height` keys. These values are relative to the aperture position, that is: point (0,0) is the top-left corner within the aperture.
 
+`aperture:pointFromScreen(x, y)`: Convert screen points to aperture-local points. This only works well while `aperture.active` is truthy, otherwise you will get a result that is out of the aperture bounds.
+
 
 ### aperture properties
 
