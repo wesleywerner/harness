@@ -14,7 +14,7 @@
 ]]--
 
 local module = {}
-local tween = require("tween")
+local tween = require("harness.tween")
 
 -- provides the scroll panel instance functions
 local scroll_mt = {}

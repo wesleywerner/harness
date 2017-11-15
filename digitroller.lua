@@ -14,7 +14,7 @@
 ]]--
 
 local module = {}
-local tween = require("tween")
+local tween = require("harness.tween")
 
 -- provides the digit roller instance functions
 local digit_mt = {}
