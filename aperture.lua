@@ -55,18 +55,18 @@ function scroll_mt:update(dt)
   self.complete = self.tween:update(dt)
 end
 
-function scroll_mt:pointToScreen(x, y)
+-- Convert screen points to local points.
+function scroll_mt:pointFromScreen(x, y)
   return x - self.left - self.xoffset, y - self.top - self.yoffset
 end
 
 function scroll_mt:pointIn(x, y, rect)
-  -- convert to screen coords
-  x, y = self:pointToScreen(x, y)
-  -- allow if point is in the scroll range
-  -- so you cannot click something that is scrolled out of view
+  -- fail right away if we are not active
   if not self.active then
     return false
   end
+  -- convert to screen coords
+  x, y = self:pointFromScreen(x, y)
   -- test if point is inside the bounds
   return x > rect.left and x < rect.left + rect.width
     and y > rect.top and y < rect.top + rect.height

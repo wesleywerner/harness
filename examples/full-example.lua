@@ -131,9 +131,6 @@ function love.mousepressed(x, y, button, istouch)
 
   end
 
-  -- you can also call this to get the point in screen coordinates
-  -- x, y = clickscroll:pointToScreen(x, y)
-
 end
 
 function love.update(dt)
