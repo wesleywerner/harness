@@ -76,46 +76,75 @@ Or you can take charge and draw them yourself simply by reading out `value`:
 
 The aperture provides a constrained view of a larger drawing. Like the photographer who touches the tips of her thumbs together, framing a shot.
 
-The aperture scrolls what can be seen, up and down, or left and right.
-
-Call the `new` function with a table of parameters:
-
-  local picturescroll = require("aperture"):new{
-    top=10,           -- position on screen
-    left=220,
-    width=200,        -- size of the aperture
-    height=210,
-    pages=3,          -- number of pages available (the size of each equals the width/height)
-    duration=0.25,    -- time in seconds to animate the scroll
-    easing="linear",  -- scroll easing method
-    landscape=true    -- true scrolls horizontally
-  }
+![figure 1](figures/figure1.png)
+_figure 1 shows some text drawn to the screen. The top frame indicates the aperture position and size, content in this frame is visible._
 
 ### aperture methods
 
-Requires update calls to process scroll animations.
+`aperture:new(args)`
 
-`aperture:update(dt)`
+Creates a new aperture instance using `args`, a table of initialisation values. Only position, size and number of pages are required, the rest are optional.
 
-Pass mouse moved events to the aperture. This is how it knows when the focus is on them.
+  local aperture = require("aperture")
 
-`aperture:mousemoved(x, y, dx, dy, istouch)`
+  local instance = aperture:new {
 
-Programatically scroll to a page. The parameter is clamped for your safety.
+    -- The position of the aperture on your screen
+    top=10,
+    left=220,
 
-`aperture:scrollTo(page number)`
+    -- The size of your aperture
+    width=200,
+    height=210,
 
-Programatically scroll an aperture left or up. These are synonymns and either can be used.
+    -- Pages is number of pages available.
+    pages=2,
 
-`aperture:scrollLeft()` and `aperture:scrollUp()`
+    -- Duration is the time in seconds the scroll animation lasts.
+    -- The default is 1 second.
+    duration=1,
 
-Programatically scroll an aperture right or down. These are synonymns and either can be used.
+    -- Easing is the function used for the scroll animation.
+    -- The default is "outCubic".
+    easing="linear",
 
-`aperture:scrollright()` and `aperture:scrollDown()`
+    -- Landscape controls horizontal scrolling.
+    -- The default is false (vertical scrolling).
+    landscape=true,
 
-`aperture:apply()` begin transformation for drawing.
+    -- Factor is the size of each step per scroll.
+    -- The default is 1 and scrolls a full page each time.
+    -- A factor of 0.5 steps half a page at a time.
+    factor=1
+  }
 
-`aperture:release()` ends transformation.
+`instance:update(dt)`
+
+Updates the aperture every frame so it can process scroll animations.
+
+`instance:mousemoved(x, y, dx, dy, istouch)`
+
+Pass mouse moved events to the aperture so that it knows when it has focus, that is: the mouse pointer is over it.
+
+`instance:scrollTo(page number)`
+
+Scroll to the given page number. The page parameter is clamped for your safety.
+
+`instance:scrollLeft()` and `aperture:scrollUp()`
+
+Scroll one page left or up. These are synonymns and either can be used.
+
+`instance:scrollRight()` and `aperture:scrollDown()`
+
+Scroll one page right or down. These are synonymns and either can be used.
+
+`instance:apply()`
+
+You must call this before you start drawing anything inside the aperture. Your drawings will be clipped and transformed accordingly.
+
+`aperture:release()`
+
+You must call this after you finished drawing the contents of your aperture. It returns clipping and transforms to normal.
 
   function love.draw()
     aperture:apply()
@@ -123,11 +152,28 @@ Programatically scroll an aperture right or down. These are synonymns and either
     aperture:release()
   end
 
-`aperture:pointIn(x, y, rect)` Tests if the given screen points `x` and `y` fall within the given `rect` bounds.
+`aperture:pointIn(x, y, rect)`
+
+Tests if the given screen points `x` and `y` fall within the given `rect` bounds.
 
 Points x and y are screen coordinates, that is: those received from the mouse pressed event.
 
-Rect is a table with the `top`, `left`, `width` and `height` keys. The values must be relative to the aperture position, that is: point (0,0) is the top-left corner within the aperture, wherever it may be drawn on the screen.
+Rect is a table with the `top`, `left`, `width` and `height` keys. The values must be relative to the aperture position, that is: point (0,0) is the top-left corner within the aperture, wherever it may be positioned on the screen.
+
+
+### aperture properties
+
+`instance.complete`
+
+Truthy when the scroll animation is at it's end, falsy while still scrolling.
+
+`instance.page`
+
+The current page number.
+
+`instance.active`
+
+The aperture considers itself active while the mouse pointer is over it.
 
 
 # license

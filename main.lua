@@ -56,7 +56,8 @@ local loremscroll = require("aperture"):new{
   height=200,
   pages=4,
   duration=1,
-  easing="inOutQuad"
+  easing="inOutQuad",
+  factor=0.5
 }
 
 local picturescroll = require("aperture"):new{
@@ -191,7 +192,7 @@ function drawLorem()
 
   -- print page info
   love.graphics.print(
-    string.format("page %d of %d", loremscroll.page, loremscroll.pages),
+    string.format("page %.1f of %d", loremscroll.page, loremscroll.pages),
     loremscroll.left, loremscroll.top + loremscroll.height + 10)
 
 end
