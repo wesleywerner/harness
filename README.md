@@ -6,28 +6,60 @@ Things to help scaffold your LÖVE user experience.
 
 The digit roller simply watches a value on a table for changes, this value must be a number value. The roller then interpolates the displayed value via a tween, so it appears to count up or down.
 
-Creating a new instance gives you a digit roller collection, this helps rolling multiple digits with ease.
+### commented example
 
-  local roller = require("digitroller")
+    local roller = require("harness.digitroller")
 
-  -- our data model where our values are kept
-  local scores = { player1=0, player2=0 }
+    -- Creating a new instance gives you a digit roller collection, this helps rolling multiple digits with ease.
+    local scorecounters = roller:new()
 
-  -- create a new digit roller collection
-  local scorecounters = roller:new()
+    -- our data model where our values are kept
+    local scoredata = { player1=0, player2=0 }
 
-### adding digit rollers
+    -- add a digit roller to watch player 1's score
+    local myRoller = scorecounters:add{
+        subject=scoredata,
+        target="player1",
+        left=30,
+        top=30,
+        suffix="points to player 1",  -- optional
+        duration=2,                   -- optional
+        easing="outCubic",            -- optional
+    }
 
-  -- add a digit roller to watch player 1's score
-  scorecounters:add{
-    subject=scoredata,
-    target="player1",
-    duration=2,
-    left=30,
-    top=300
-    suffix="points",
-    easing="outCubic",
-  }
+    -- add another roller for player 2
+    scorecounters:add{
+        subject=scoredata,
+        target="player2",
+        left=30,
+        top=50,
+        suffix="points to player 2"
+    }
+
+    -- update the collection to animate the rollers
+    function love.update(dt)
+        scorecounters:update(dt)
+    end
+
+    function love.draw()
+
+        -- let the digit roller draw itself
+        scorecounters:draw()
+
+        -- or you can control the drawing directly
+        local printedValue = string.format("%d %s (custom print)", myRoller.value, myRoller.suffix)
+        love.graphics.print(printedValue, myRoller.left, myRoller.top + 40)
+
+    end
+
+    function love.keypressed(key)
+      if key == "escape" then
+        love.event.quit()
+      else
+        scoredata.player1 = math.random(1, 100)
+        scoredata.player2 = math.random(1, 100)
+      end
+    end
 
 *required parameters*
 
@@ -43,137 +75,123 @@ Creating a new instance gives you a digit roller collection, this helps rolling 
 
 Here is a [list of easing functions](https://github.com/kikito/tween.lua#easing-functions) available.
 
-### updating digit rollers
-
-  function love.update(dt)
-    scorecounters:update(dt)
-  end
-
-### drawing digit rollers
-
-You can call the built-in `draw` function to print all digit rollers in your collection:
-
-  function love.draw()
-    scorecounters:draw()
-  end
-
-Or you can take charge and draw them yourself simply by reading out `value`:
-
-  -- must capture the digit roller instance for later use
-  local roller = scorecounters:add{
-    subject=scoredata,
-    target="player1",
-    left=30,
-    top=300
-  }
-
-  function love.draw()
-    -- draw the roller's value
-    love.graphics.print(string.format("%d", roller.value), roller.left, roller.top)
-  end
-
 # aperture
 
 The aperture provides a constrained view of a larger drawing. Like the photographer who touches the tips of her thumbs together, framing a shot.
 
 ![figure 1](figures/figure1.png)
-_figure 1 shows some text drawn to the screen. The top frame indicates the aperture position and size, content in this frame is visible._
+
+_figure 1 shows some text drawn to the screen. The top frame indicates the aperture position and size, anything drawn in this area is visible._
+
+### commented example
+
+    -- the text we will be using
+    local loremipsum = [[Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip ex ea commodo consequat. Duis aute irure dolor inreprehenderit in voluptate velit esse cillum dolore eu fugiat nullapariatur. Excepteur sint occaecat cupidatat non proident, sunt inculpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip ex ea commodo consequat. Duis aute irure dolor inreprehenderit in voluptate velit esse cillum dolore eu fugiat nullapariatur. Excepteur sint occaecat cupidatat non proident, sunt inculpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed doeiusmod tempor incididunt ut labore et dolore magna aliq]]
+
+    local aperture = require("harness.aperture")
+
+    local textaperture = aperture:new {
+
+      -- The position of the aperture on your screen
+      top=0,
+      left=300,
+
+      -- The size of your aperture
+      width=200,
+      height=200,
+
+      -- Pages is number of pages available.
+      pages=3,
+
+      -- Duration is the time in seconds the scroll animation lasts.
+      -- The default is 1 second.
+      duration=1,
+
+      -- Easing is the function used for the scroll animation.
+      -- The default is "outCubic".
+      easing="inOutCubic",
+
+      -- Landscape controls horizontal scrolling.
+      -- The default is false (vertical scrolling).
+      landscape=false,
+
+      -- Factor is the size of each step per scroll.
+      -- The default is 1 and scrolls a full page each time.
+      -- A factor of 0.5 steps half a page at a time.
+      factor=1
+    }
+
+
+    function love.mousemoved(x, y, dx, dy, istouch)
+
+      textaperture:mousemoved(x, y, dx, dy, istouch)
+
+    end
+
+    function love.update(dt)
+
+      textaperture:update(dt)
+
+    end
+
+    function love.wheelmoved(x, y)
+      if y > 0 then
+        textaperture:scrollUp()
+      else
+        textaperture:scrollDown()
+      end
+    end
+
+    function love.draw()
+
+      -- print the text without any aperture
+      love.graphics.printf(loremipsum, 10, 10, 200)
+
+      -- now apply the aperture and print the same text.
+      -- note how x and y are draws relative to the aperture.
+      textaperture:apply()
+      love.graphics.printf(loremipsum, 10, 10, 200)
+      textaperture:release()
+
+    end
+
+    function love.keypressed(key)
+      if key == "escape" then
+        love.event.quit()
+      end
+    end
+
 
 ### aperture methods
 
-`aperture:new(args)`
+`aperture:new(args)`: Returns a new aperture passing a key-value table `args` as parameters.
 
-Creates a new aperture instance using `args`, a table of initialisation values. Only position, size and number of pages are required, the rest are optional.
+`instance:update(dt)`: Updates the aperture every frame so it can process scroll animations.
 
-  local aperture = require("aperture")
+`instance:mousemoved(x, y, dx, dy, istouch)`: Pass mouse moved events to the aperture so that it knows when it has focus, that is: the mouse pointer is over it.
 
-  local instance = aperture:new {
+`instance:scrollTo(page number)`: Scroll to the given page number. The parameter is clamped for your safety.
 
-    -- The position of the aperture on your screen
-    top=10,
-    left=220,
+`instance:scrollLeft()` and `aperture:scrollUp()`: Scroll one page left or up. These are synonymns and either can be used.
 
-    -- The size of your aperture
-    width=200,
-    height=210,
+`instance:scrollRight()` and `aperture:scrollDown()`: Scroll one page right or down. These are synonymns and either can be used.
 
-    -- Pages is number of pages available.
-    pages=2,
+`instance:apply()`: Call this to draw inside the aperture. Your drawings will be clipped and transformed accordingly.
 
-    -- Duration is the time in seconds the scroll animation lasts.
-    -- The default is 1 second.
-    duration=1,
+`aperture:release()`: Call this when you are done drawing inside the aperture. It returns clipping and transforms to normal.
 
-    -- Easing is the function used for the scroll animation.
-    -- The default is "outCubic".
-    easing="linear",
+`aperture:pointIn(x, y, rect)`: Tests if the given screen points `x` and `y` fall within the given `rect` bounds. Points `x` and `y` are screen coordinates, that is: those received from the mouse pressed event.
 
-    -- Landscape controls horizontal scrolling.
-    -- The default is false (vertical scrolling).
-    landscape=true,
-
-    -- Factor is the size of each step per scroll.
-    -- The default is 1 and scrolls a full page each time.
-    -- A factor of 0.5 steps half a page at a time.
-    factor=1
-  }
-
-`instance:update(dt)`
-
-Updates the aperture every frame so it can process scroll animations.
-
-`instance:mousemoved(x, y, dx, dy, istouch)`
-
-Pass mouse moved events to the aperture so that it knows when it has focus, that is: the mouse pointer is over it.
-
-`instance:scrollTo(page number)`
-
-Scroll to the given page number. The page parameter is clamped for your safety.
-
-`instance:scrollLeft()` and `aperture:scrollUp()`
-
-Scroll one page left or up. These are synonymns and either can be used.
-
-`instance:scrollRight()` and `aperture:scrollDown()`
-
-Scroll one page right or down. These are synonymns and either can be used.
-
-`instance:apply()`
-
-You must call this before you start drawing anything inside the aperture. Your drawings will be clipped and transformed accordingly.
-
-`aperture:release()`
-
-You must call this after you finished drawing the contents of your aperture. It returns clipping and transforms to normal.
-
-  function love.draw()
-    aperture:apply()
-    ... your drawing here
-    aperture:release()
-  end
-
-`aperture:pointIn(x, y, rect)`
-
-Tests if the given screen points `x` and `y` fall within the given `rect` bounds.
-
-Points x and y are screen coordinates, that is: those received from the mouse pressed event.
-
-Rect is a table with the `top`, `left`, `width` and `height` keys. The values must be relative to the aperture position, that is: point (0,0) is the top-left corner within the aperture, wherever it may be positioned on the screen.
+`rect` is a table with the `top`, `left`, `width` and `height` keys. These values are relative to the aperture position, that is: point (0,0) is the top-left corner within the aperture.
 
 
 ### aperture properties
 
-`instance.complete`
+`instance.complete`: Truthy when the scroll animation is at it's end, falsy while still scrolling.
 
-Truthy when the scroll animation is at it's end, falsy while still scrolling.
+`instance.page`: The current page number.
 
-`instance.page`
-
-The current page number.
-
-`instance.active`
-
-The aperture considers itself active while the mouse pointer is over it.
+`instance.active`: The aperture considers itself active while the mouse pointer is over it.
 
 
 # license
