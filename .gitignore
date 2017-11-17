@@ -1,2 +1,6 @@
+# examples symlinks
 examples/harness
 examples/main.lua
+
+# diff backups
+*.orig
