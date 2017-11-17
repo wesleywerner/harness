@@ -88,8 +88,18 @@ local testbutton = hotspot:new {
   top=240,
   width=120,
   height=40,
-  counter=0
+  counter=0,
+  -- action function called when aperture is clicked
+  action = function(self)
+    self.counter = self.counter + 1
+    local increase = math.random(10, 100)
+    scoredata.player1 = scoredata.player1 + increase
+    scoredata.player2 = scoredata.player2 + increase
+  end
   }
+
+-- insert the button into the click aperture
+clickscroll:insert(testbutton)
 
 function love.keypressed(key)
   if key == "escape" then
@@ -128,14 +138,7 @@ end
 function love.mousepressed(x, y, button, istouch)
 
   if button == 1 then
-
-    if clickscroll:pointIn(x, y, testbutton) then
-      testbutton.counter = testbutton.counter + 1
-      local increase = math.random(10, 100)
-      scoredata.player1 = scoredata.player1 + increase
-      scoredata.player2 = scoredata.player2 + increase
-    end
-
+    clickscroll:mousepressed(x, y, button, istouch)
   end
 
 end
