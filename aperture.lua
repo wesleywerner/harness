@@ -17,7 +17,7 @@ local module = {}
 local tween = require("harness.tween")
 
 -- provides the scroll panel instance functions
-local scroll_mt = {}
+local aperture = {}
 
 function module:new(args)
 
@@ -42,7 +42,7 @@ function module:new(args)
   instance.page = 1
 
   -- apply instance functions
-  setmetatable(instance, { __index = scroll_mt })
+  setmetatable(instance, { __index = aperture })
 
   -- apply first time tweening
   instance:applytween()
@@ -51,16 +51,16 @@ function module:new(args)
 
 end
 
-function scroll_mt:update(dt)
+function aperture:update(dt)
   self.complete = self.tween:update(dt)
 end
 
 -- Convert screen points to local points.
-function scroll_mt:pointFromScreen(x, y)
+function aperture:pointFromScreen(x, y)
   return x - self.left - self.xoffset, y - self.top - self.yoffset
 end
 
-function scroll_mt:pointIn(x, y, rect)
+function aperture:pointIn(x, y, rect)
   -- fail right away if we are not active
   if not self.active then
     return false
@@ -72,7 +72,7 @@ function scroll_mt:pointIn(x, y, rect)
     and y > rect.top and y < rect.top + rect.height
 end
 
-function scroll_mt:apply()
+function aperture:apply()
 
   -- clip anything drawn
   love.graphics.stencil(function()
@@ -91,12 +91,12 @@ function scroll_mt:apply()
 
 end
 
-function scroll_mt:release()
+function aperture:release()
   love.graphics.pop()
   love.graphics.setStencilTest()
 end
 
-function scroll_mt:scrollUp()
+function aperture:scrollUp()
   if self.complete and self.active then
     self.complete = false
     self.page = math.max(1, self.page - self.factor)
@@ -104,7 +104,7 @@ function scroll_mt:scrollUp()
   end
 end
 
-function scroll_mt:scrollDown()
+function aperture:scrollDown()
   if self.complete and self.active then
     self.complete = false
     self.page = math.min(self.pages, self.page + self.factor)
@@ -112,15 +112,15 @@ function scroll_mt:scrollDown()
   end
 end
 
-function scroll_mt:scrollLeft()
+function aperture:scrollLeft()
   self:scrollUp()
 end
 
-function scroll_mt:scrollRight()
+function aperture:scrollRight()
   self:scrollDown()
 end
 
-function scroll_mt:scrollTo(page)
+function aperture:scrollTo(page)
 
   -- clamp the desired page
   page = math.min(self.pages, math.max(1, page))
@@ -132,14 +132,14 @@ function scroll_mt:scrollTo(page)
 
 end
 
-function scroll_mt:mousemoved(x, y, dx, dy, istouch)
+function aperture:mousemoved(x, y, dx, dy, istouch)
   self.active = (x > self.left
     and x < self.left + self.width
     and y > self.top
     and y < self.top + self.height)
 end
 
-function scroll_mt:applytween()
+function aperture:applytween()
 
   local xo = (self.page-1) * self.width * -1
   local yo = (self.page-1) * self.height * -1
