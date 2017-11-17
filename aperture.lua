@@ -41,6 +41,9 @@ function module:new(args)
   instance.xoffset = 0
   instance.page = 1
 
+  -- keep a collection of embedded hotspots
+  instance.hotspots = {}
+
   -- apply instance functions
   setmetatable(instance, { __index = aperture })
 
@@ -49,6 +52,15 @@ function module:new(args)
 
   return instance
 
+end
+
+--- Inserts another hotspot in the aperture.
+-- This gives automatic clicking on inserted hotspots
+-- via the @{aperture:mousepressed} function.
+--
+-- @tparam hotspot hotspot
+function aperture:insert(hotspot)
+  table.insert(self.hotspots, hotspot)
 end
 
 function aperture:update(dt)
@@ -137,6 +149,31 @@ function aperture:mousemoved(x, y, dx, dy, istouch)
     and x < self.left + self.width
     and y > self.top
     and y < self.top + self.height)
+end
+
+--- Process clicks on hotspots inside this aperture.
+-- If the hotspot has a "action" key function it will be called.
+--
+-- @tparam number x
+-- @tparam number y
+-- @tparam number button
+-- @tparam bool istouch
+function aperture:mousepressed(x, y, button, istouch)
+
+  -- ignore clicks if this aperture is not active
+  if not self.active then return end
+
+  -- convert to local points
+  x, y = self:pointFromScreen(x, y)
+
+  for _, hotspot in ipairs(self.hotspots) do
+    if hotspot.touched and hotspot:touched(x, y) then
+      if type(hotspot.action) == "function" then
+        hotspot:action()
+      end
+    end
+  end
+
 end
 
 function aperture:applytween()
