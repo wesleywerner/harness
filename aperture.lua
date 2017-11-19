@@ -21,11 +21,12 @@ local aperture = {}
 
 function module:new(args)
 
-  if not args.top or not args.left or not args.width or not args.height then
-    error("Aperture must have a top, left, width and height")
-  end
+  -- inherit from the hotspot
+  local hotspot_module = require("harness.hotspot")
+  local instance = hotspot_module:new(args)
 
-  local instance = {}
+  -- save the hotspot mousemoved function so we can overwrite it
+  instance.mousemoved_base = instance.mousemoved
 
   -- copy arguments to the instance
   for k, v in pairs(args) do
@@ -73,6 +74,7 @@ function aperture:pointFromScreen(x, y)
 end
 
 function aperture:pointIn(x, y, rect)
+
   -- fail right away if we are not active
   if not self.active then
     return false
@@ -109,7 +111,7 @@ function aperture:release()
 end
 
 function aperture:scrollUp()
-  if self.complete and self.active then
+  if self.complete and self.touched then
     self.complete = false
     self.page = math.max(1, self.page - self.factor)
     self:applytween()
@@ -117,7 +119,7 @@ function aperture:scrollUp()
 end
 
 function aperture:scrollDown()
-  if self.complete and self.active then
+  if self.complete and self.touched then
     self.complete = false
     self.page = math.min(self.pages, self.page + self.factor)
     self:applytween()
@@ -144,11 +146,18 @@ function aperture:scrollTo(page)
 
 end
 
+--- Process mouse movement to determine if aperture is touched
 function aperture:mousemoved(x, y, dx, dy, istouch)
-  self.active = (x > self.left
-    and x < self.left + self.width
-    and y > self.top
-    and y < self.top + self.height)
+
+  self:mousemoved_base(x, y, dx, dy, istouch)
+
+  -- touch any children hotspots with local coordinates
+  x, y = self:pointFromScreen(x, y)
+
+  for _, hotspot in ipairs(self.hotspots) do
+    hotspot:mousemoved(x, y, dx, dy, istouch)
+  end
+
 end
 
 --- Process clicks on hotspots inside this aperture.
@@ -161,13 +170,10 @@ end
 function aperture:mousepressed(x, y, button, istouch)
 
   -- ignore clicks if this aperture is not active
-  if not self.active then return end
-
-  -- convert to local points
-  x, y = self:pointFromScreen(x, y)
+  if not self.touched then return end
 
   for _, hotspot in ipairs(self.hotspots) do
-    if hotspot.touched and hotspot:touched(x, y) then
+    if hotspot.touched then
       if type(hotspot.action) == "function" then
         hotspot:action()
       end

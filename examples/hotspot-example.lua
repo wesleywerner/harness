@@ -61,10 +61,22 @@ function love.mousepressed(x, y, button, istouch)
   -- test if any hot spot was touched
   for _, spot in ipairs(sensitiveAreas) do
 
-    if spot:touched(x, y) then
+    if spot.touched then
       -- yep
       spot.ourFillTimeout = 1
     end
+
+  end
+
+end
+
+function love.mousemoved(x, y, dx, dy, istouch)
+
+  -- test if any hot spot was touched
+  for _, spot in ipairs(sensitiveAreas) do
+
+    -- this sets "touched" to true on any hotspot under the cursor
+    spot:mousemoved(x, y, dx, dy, istouch)
 
   end
 

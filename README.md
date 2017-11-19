@@ -185,7 +185,7 @@ _figure 1 shows some text drawn to the screen. The top frame indicates the apert
 
 `instance:update(dt)`: Updates the aperture every frame so it can process scroll animations.
 
-`instance:mousemoved(x, y, dx, dy, istouch)`: Pass mouse moved events to the aperture so that it knows when it has focus, that is: the mouse pointer is over it.
+`aperture:mousemoved(x, y, dx, dy, istouch)`: process mouse movement so that the "touched" property is set to `true` if the cursor is over the aperture.
 
 `instance:scrollTo(page number)`: Scroll to the given page number. The parameter is clamped for your safety.
 
@@ -203,6 +203,10 @@ _figure 1 shows some text drawn to the screen. The top frame indicates the apert
 
 `aperture:pointFromScreen(x, y)`: Convert screen points to aperture-local points. This only works well while `aperture.active` is truthy, otherwise you will get a result that is out of the aperture bounds.
 
+`aperture:mousepressed(x, y, button, istouch)`
+
+`aperture:insert(hotspot)`
+
 
 ### aperture properties
 
@@ -210,7 +214,7 @@ _figure 1 shows some text drawn to the screen. The top frame indicates the apert
 
 `instance.page`: The current page number.
 
-`instance.active`: The aperture considers itself active while the mouse pointer is over it.
+`hotspot.touched`: true while the cursor is over the aperture.
 
 
 # hotspot
@@ -267,10 +271,22 @@ The hotspot is a simple yet magical thing. Use it to track clicking on areas eas
       -- test if any hot spot was touched
       for _, spot in ipairs(sensitiveAreas) do
 
-        if spot:touched(x, y) then
+        if spot.touched then
           -- yep
           spot.ourFillTimeout = 1
         end
+
+      end
+
+    end
+
+    function love.mousemoved(x, y, dx, dy, istouch)
+
+      -- test if any hot spot was touched
+      for _, spot in ipairs(sensitiveAreas) do
+
+        -- this sets "touched" to true on any hotspot under the cursor
+        spot:mousemoved(x, y, dx, dy, istouch)
 
       end
 
@@ -319,11 +335,16 @@ The hotspot is a simple yet magical thing. Use it to track clicking on areas eas
       end
     end
 
+
 ### hotspot methods
 
 `hotspot:new(args)`: returns a new hotspot.
 
-`hotspot:touched(x, y)`: test if the point is inside the hotspot.
+`hotspot:mousemoved(x, y, dx, dy, istouch)`: process mouse movement so that the "touched" property is set to `true` if the cursor is over the hotspot.
+
+### hotspot properties
+
+`hotspot.touched`: true while the cursor is over the hotspot.
 
 
 # license

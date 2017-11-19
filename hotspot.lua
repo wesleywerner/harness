@@ -36,8 +36,9 @@ function module:new(args)
 
 end
 
-function hotspot:touched(x, y)
-  return x > self.left and x < self.left + self.width
+--- Process mouse movement to determine if a hotspot is touched
+function hotspot:mousemoved(x, y, dx, dy, istouch)
+  self.touched = x > self.left and x < self.left + self.width
     and y > self.top and y < self.top + self.height
 end
 
