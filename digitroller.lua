@@ -13,6 +13,15 @@
    along with this program. If not, see http://www.gnu.org/licenses/.
 ]]--
 
+--- Provides a rolling number display.
+-- The digit roller simply watches a value on a table for changes, this
+-- value must be a number value. The roller then interpolates the displayed
+-- value via a tween, so it appears to count up or down.
+--
+-- @author Wesley Werner
+-- @license GPL v3
+-- @module digitroller
+
 local module = {}
 local tween = require("harness.tween")
 
@@ -20,19 +29,59 @@ local tween = require("harness.tween")
 local digit_mt = {}
 
 -- provides the digit roller collection functions
-local manager_mt = {}
+local digitroller = {}
 
--- create a new instance of a digit roller collection.
+--- A table of arguments for new digit rollers.
+-- @table args
+--
+-- @tfield table subject
+-- The table to watch.
+--
+-- @tfield string target
+-- The key on the table to watch.
+--
+-- @tfield[opt] number duration
+-- The time in seconds the rolling animation will last.
+-- The default is 3 seconds.
+--
+-- @tfield[opt] number left
+-- The left position in pixels (if using @{draw})
+--
+-- @tfield[opt] number top
+-- The top position in pixels (if using @{draw})
+--
+-- @tfield[opt] string suffix
+-- Text to append to the printed value.
+--
+-- @tfield string easing
+-- The name of easing function to use for the rolling animation.
+--
+-- List of easing functions: https://github.com/kikito/tween.lua#easing-functions
+
+
+--- Lists properties available on the instance.
+-- @table instance
+--
+-- @tfield number value
+-- Represents the current display value of the digit roller.
+
+
+--- create a new digit roller collection.
+--
+-- @treturn table
 function module:new()
 
   local manager = {}
   manager.collection = {}
-  setmetatable(manager, { __index = manager_mt })
+  setmetatable(manager, { __index = digitroller })
   return manager
 
 end
 
-function manager_mt:add(args)
+--- Add a digit roller to the collection.
+--
+-- @tparam args args
+function digitroller:add(args)
 
   if not args.subject then
     error("A digit roller must have a subject, a table to watch")
@@ -76,7 +125,12 @@ function manager_mt:add(args)
 
 end
 
-function manager_mt:update(dt)
+--- Process animations.
+-- Call this in you main game loop.
+--
+-- @tparam number dt
+-- Time delta as given by the Love callback
+function digitroller:update(dt)
   for _, label in ipairs(self.collection) do
     label.tween:update(dt)
     if label.value ~= label.subject[label.target] then
@@ -85,16 +139,13 @@ function manager_mt:update(dt)
   end
 end
 
-function manager_mt:draw()
+--- Draws all the digit rollers in the collection.
+function digitroller:draw()
   for _, label in ipairs(self.collection) do
     love.graphics.printf(
       string.format("%d %s", label.value, label.suffix),
       label.left, label.top, label.limit, label.align)
   end
-end
-
-function manager_mt:get(target)
-
 end
 
 function digit_mt:applytween()

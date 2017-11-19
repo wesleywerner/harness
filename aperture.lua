@@ -13,12 +13,77 @@
    along with this program. If not, see http://www.gnu.org/licenses/.
 ]]--
 
+--- Provides a scrollable view.
+-- Like the photographer who touches the tips of her thumbs together, framing a shot.
+--
+-- @author Wesley Werner
+-- @license GPL v3
+-- @module aperture
+
 local module = {}
 local tween = require("harness.tween")
-
--- provides the scroll panel instance functions
 local aperture = {}
 
+--- A table of arguments for new apertures.
+-- In addition to the mentioned parameters, you can add any other keys
+-- you want. All keys are copied to the aperture instance, which allows
+-- you to access them later through the instance.
+--
+-- @table args
+--
+-- @tfield number left
+-- The left screen position.
+--
+-- @tfield number top
+-- The top screen position.
+--
+-- @tfield number width
+-- The width in pixels.
+--
+-- @tfield number height
+-- The height in pixels.
+--
+-- @tfield[opt] number pages
+-- Sets the total number of pages available to scroll through.
+--
+-- @tfield[opt] number duration
+-- The time in seconds the scroll animation lasts.
+-- The default is 1 second.
+--
+-- @tfield[opt] string easing
+-- The easing function used for the scroll animation.
+-- The default is "outCubic".
+--
+-- @tfield[opt] bool landscape
+-- Landscape controls horizontal scrolling.
+-- The default is false (vertical scrolling).
+--
+--
+-- @tfield[opt] number factor
+-- The size of each scroll step. You can set this to a fraction too.
+-- The default is 1 and scrolls a full page each time.
+-- A factor of 0.5 steps half a page at a time.
+
+
+--- Lists properties available on the aperture instance.
+-- @table instance
+--
+-- @tfield bool touched
+-- true while the cursor is over the aperture. This is determined automatically
+-- while you call @{mousemoved}
+--
+-- @tfield table hotspots
+-- A collection of @{hotspot}s contained within the aperture that were added
+-- via the @{insert} function.
+
+
+--- Creates a new aperture.
+--
+-- @tparam args args
+-- A table of arguments.
+--
+-- @treturn instance
+-- A new aperture instance
 function module:new(args)
 
   -- inherit from the hotspot
@@ -55,37 +120,45 @@ function module:new(args)
 
 end
 
---- Inserts another hotspot in the aperture.
+--- Inserts a hotspot into the aperture.
 -- This gives automatic clicking on inserted hotspots
--- via the @{aperture:mousepressed} function.
+-- via the @{mousepressed} function.
 --
 -- @tparam hotspot hotspot
+-- The @{hotspot} to insert.
 function aperture:insert(hotspot)
   table.insert(self.hotspots, hotspot)
 end
 
+--- Process apeture animations.
+-- Call this in you main game loop.
+--
+-- @tparam number dt
+-- Time delta as given by the Love callback
 function aperture:update(dt)
   self.complete = self.tween:update(dt)
 end
 
--- Convert screen points to local points.
+--- Converts screen coordinates to local points.
+--
+-- @tparam number x
+-- The x point to convert.
+--
+-- @tparam number y
+-- The y point to convert.
+--
+-- @treturn number
+-- The converted x, y points as two output parameters.
 function aperture:pointFromScreen(x, y)
   return x - self.left - self.xoffset, y - self.top - self.yoffset
 end
 
-function aperture:pointIn(x, y, rect)
-
-  -- fail right away if we are not active
-  if not self.active then
-    return false
-  end
-  -- convert to screen coords
-  x, y = self:pointFromScreen(x, y)
-  -- test if point is inside the bounds
-  return x > rect.left and x < rect.left + rect.width
-    and y > rect.top and y < rect.top + rect.height
-end
-
+--- Apply transforms and clipping.
+-- Call this to begin drawing inside the aperture. This ensures anything drawn
+-- will be constrained to within the aperture size and position on screen.
+-- Drawing positions are relative to the aperture.
+--
+-- @see release
 function aperture:apply()
 
   -- clip anything drawn
@@ -105,11 +178,16 @@ function aperture:apply()
 
 end
 
+--- Release transforms and clippings.
+-- Call this when you are done drawing aperture contents.
+--
+-- @see apply
 function aperture:release()
   love.graphics.pop()
   love.graphics.setStencilTest()
 end
 
+--- Scroll the aperture one page up.
 function aperture:scrollUp()
   if self.complete and self.touched then
     self.complete = false
@@ -118,6 +196,7 @@ function aperture:scrollUp()
   end
 end
 
+--- Scroll the aperture one page down.
 function aperture:scrollDown()
   if self.complete and self.touched then
     self.complete = false
@@ -126,14 +205,29 @@ function aperture:scrollDown()
   end
 end
 
+--- Scroll the aperture one page left.
+-- This function is a synonymn for @{scrollUp} and provided just for
+-- readability. Useful for apertures that display in landscape mode.
+--
+-- @see args
 function aperture:scrollLeft()
   self:scrollUp()
 end
 
+--- Scroll the aperture one page right.
+-- This function is a synonymn for @{scrollDown} and provided just for
+-- readability. Useful for apertures that display in landscape mode.
+--
+-- @see args
 function aperture:scrollRight()
   self:scrollDown()
 end
 
+--- Scroll the aperture to the specified page.
+-- The given page is clamped to the aperture's limits so it is safe to
+-- give an out-of-bounds value.
+--
+-- @tparam number page
 function aperture:scrollTo(page)
 
   -- clamp the desired page
@@ -146,7 +240,9 @@ function aperture:scrollTo(page)
 
 end
 
---- Process mouse movement to determine if aperture is touched
+--- Process mouse movement.
+-- Call this from your game loop to let the aperture determine if
+-- it is in focus via the "touched" property.
 function aperture:mousemoved(x, y, dx, dy, istouch)
 
   self:mousemoved_base(x, y, dx, dy, istouch)
@@ -160,13 +256,10 @@ function aperture:mousemoved(x, y, dx, dy, istouch)
 
 end
 
---- Process clicks on hotspots inside this aperture.
+--- Process clicks inside the aperture.
 -- If the hotspot has a "action" key function it will be called.
 --
--- @tparam number x
--- @tparam number y
--- @tparam number button
--- @tparam bool istouch
+-- @see aperture:insert
 function aperture:mousepressed(x, y, button, istouch)
 
   -- ignore clicks if this aperture is not active
@@ -182,6 +275,10 @@ function aperture:mousepressed(x, y, button, istouch)
 
 end
 
+-- Apply new animations.
+-- This is an internal function used by the aperture to apply a new
+-- tween animation when one of the scroll functions are called.
+-- You should not need to call this.
 function aperture:applytween()
 
   local xo = (self.page-1) * self.width * -1
