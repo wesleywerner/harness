@@ -1,0 +1,591 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>aperture</strong></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>aperture</code></h1>
+<p>Provides a scrollable view.</p>
+<p>
+ Like the photographer who touches the tips of her thumbs together, framing a shot.
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>License</strong>: GPL v3</li>
+        <li><strong>Author</strong>: Wesley Werner</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#module:new">module:new (args)</a></td>
+	<td class="summary">Creates a new aperture.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#insert">insert (hotspot)</a></td>
+	<td class="summary">Inserts a hotspot into the aperture.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#update">update (dt)</a></td>
+	<td class="summary">Process apeture animations.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pointFromScreen">pointFromScreen (x, y)</a></td>
+	<td class="summary">Converts screen coordinates to local points.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#apply">apply ()</a></td>
+	<td class="summary">Apply transforms and clipping.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#release">release ()</a></td>
+	<td class="summary">Release transforms and clippings.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#scrollUp">scrollUp ()</a></td>
+	<td class="summary">Scroll the aperture one page up.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#scrollDown">scrollDown ()</a></td>
+	<td class="summary">Scroll the aperture one page down.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#scrollLeft">scrollLeft ()</a></td>
+	<td class="summary">Scroll the aperture one page left.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#scrollRight">scrollRight ()</a></td>
+	<td class="summary">Scroll the aperture one page right.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#scrollTo">scrollTo (page)</a></td>
+	<td class="summary">Scroll the aperture to the specified page.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mousemoved">mousemoved (x, y, dx, dy, istouch)</a></td>
+	<td class="summary">Process mouse movement.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mousepressed">mousepressed (x, y, button, istouch)</a></td>
+	<td class="summary">Process clicks inside the aperture.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#args">args</a></td>
+	<td class="summary">A table of arguments for new apertures.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#instance">instance</a></td>
+	<td class="summary">Lists properties available on the aperture instance.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "module:new"></a>
+    <strong>module:new (args)</strong>
+    </dt>
+    <dd>
+    Creates a new aperture.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">args</span>
+            <span class="types"><a class="type" href="../modules/aperture.html#args">args</a></span>
+
+ A table of arguments.
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/aperture.html#instance">instance</a></span>
+        A new aperture instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "insert"></a>
+    <strong>insert (hotspot)</strong>
+    </dt>
+    <dd>
+    Inserts a hotspot into the aperture.
+ This gives automatic clicking on inserted hotspots
+ via the <a href="../modules/aperture.html#mousepressed">mousepressed</a> function.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">hotspot</span>
+            <span class="types"><span class="type">hotspot</span></span>
+
+ The <a href="../modules/hotspot.html#">hotspot</a> to insert.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "update"></a>
+    <strong>update (dt)</strong>
+    </dt>
+    <dd>
+    Process apeture animations.
+ Call this in you main game loop.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
+
+ Time delta as given by the Love callback
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pointFromScreen"></a>
+    <strong>pointFromScreen (x, y)</strong>
+    </dt>
+    <dd>
+    Converts screen coordinates to local points.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The x point to convert.
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The y point to convert.
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        The converted x, y points as two output parameters.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "apply"></a>
+    <strong>apply ()</strong>
+    </dt>
+    <dd>
+    Apply transforms and clipping.
+ Call this to begin drawing inside the aperture. This ensures anything drawn
+ will be constrained to within the aperture size and position on screen.
+ Drawing positions are relative to the aperture.
+
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/aperture.html#release">release</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "release"></a>
+    <strong>release ()</strong>
+    </dt>
+    <dd>
+    Release transforms and clippings.
+ Call this when you are done drawing aperture contents.
+
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/aperture.html#apply">apply</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "scrollUp"></a>
+    <strong>scrollUp ()</strong>
+    </dt>
+    <dd>
+    Scroll the aperture one page up.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "scrollDown"></a>
+    <strong>scrollDown ()</strong>
+    </dt>
+    <dd>
+    Scroll the aperture one page down.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "scrollLeft"></a>
+    <strong>scrollLeft ()</strong>
+    </dt>
+    <dd>
+    Scroll the aperture one page left.
+ This function is a synonymn for <a href="../modules/aperture.html#scrollUp">scrollUp</a> and provided just for
+ readability. Useful for apertures that display in landscape mode.
+
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/aperture.html#args">args</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "scrollRight"></a>
+    <strong>scrollRight ()</strong>
+    </dt>
+    <dd>
+    Scroll the aperture one page right.
+ This function is a synonymn for <a href="../modules/aperture.html#scrollDown">scrollDown</a> and provided just for
+ readability. Useful for apertures that display in landscape mode.
+
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/aperture.html#args">args</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "scrollTo"></a>
+    <strong>scrollTo (page)</strong>
+    </dt>
+    <dd>
+    Scroll the aperture to the specified page.
+ The given page is clamped to the aperture's limits so it is safe to
+ give an out-of-bounds value.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">page</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mousemoved"></a>
+    <strong>mousemoved (x, y, dx, dy, istouch)</strong>
+    </dt>
+    <dd>
+    Process mouse movement.
+ Call this from your game loop to let the aperture determine if
+ it is in focus via the "touched" property.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+        </li>
+        <li><span class="parameter">y</span>
+
+        </li>
+        <li><span class="parameter">dx</span>
+
+        </li>
+        <li><span class="parameter">dy</span>
+
+        </li>
+        <li><span class="parameter">istouch</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mousepressed"></a>
+    <strong>mousepressed (x, y, button, istouch)</strong>
+    </dt>
+    <dd>
+    Process clicks inside the aperture.
+ If the hotspot has a "action" key function it will be called.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+        </li>
+        <li><span class="parameter">y</span>
+
+        </li>
+        <li><span class="parameter">button</span>
+
+        </li>
+        <li><span class="parameter">istouch</span>
+        ignore clicks if this aperture is not active
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/aperture.html#insert">aperture:insert</a>
+    </ul>
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "args"></a>
+    <strong>args</strong>
+    </dt>
+    <dd>
+    A table of arguments for new apertures.
+ In addition to the mentioned parameters, you can add any other keys
+ you want. All keys are copied to the aperture instance, which allows
+ you to access them later through the instance.
+
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">left</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The left screen position.
+
+        </li>
+        <li><span class="parameter">top</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The top screen position.
+
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The width in pixels.
+
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The height in pixels.
+
+        </li>
+        <li><span class="parameter">pages</span>
+            <span class="types"><span class="type">number</span></span>
+
+ Sets the total number of pages available to scroll through.
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The time in seconds the scroll animation lasts.
+ The default is 1 second.
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">easing</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The easing function used for the scroll animation.
+ The default is "outCubic".
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">landscape</span>
+            <span class="types"><span class="type">bool</span></span>
+
+ Landscape controls horizontal scrolling.
+ The default is false (vertical scrolling).
+<p>
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">factor</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The size of each scroll step. You can set this to a fraction too.
+ The default is 1 and scrolls a full page each time.
+ A factor of 0.5 steps half a page at a time.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "instance"></a>
+    <strong>instance</strong>
+    </dt>
+    <dd>
+    Lists properties available on the aperture instance.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">touched</span>
+            <span class="types"><span class="type">bool</span></span>
+
+ true while the cursor is over the aperture. This is determined automatically
+ while you call <a href="../modules/aperture.html#mousemoved">mousemoved</a>
+
+        </li>
+        <li><span class="parameter">hotspots</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
+ A collection of <a href="../modules/hotspot.html#">hotspot</a>s contained within the aperture that were added
+ via the <a href="../modules/aperture.html#insert">insert</a> function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-11-19 10:32:57 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

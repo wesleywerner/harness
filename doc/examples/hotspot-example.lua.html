@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><strong>hotspot-example.lua</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>hotspot-example.lua</h2>
+<pre>
+<span class="comment">--[[
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see http://www.gnu.org/licenses/.
+]]</span><span class="comment">--
+</span>
+<span class="keyword">local</span> black = {<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>}
+<span class="keyword">local</span> white = {<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>}
+<span class="keyword">local</span> green = {<span class="number">64</span>, <span class="number">255</span>, <span class="number">128</span>}
+<span class="keyword">local</span> pink = {<span class="number">255</span>, <span class="number">64</span>, <span class="number">255</span>}
+<span class="keyword">local</span> heart = love.graphics.newImage(<span class="string">"heart.png"</span>)
+<span class="keyword">local</span> heartflutter = <span class="number">0</span>
+
+<span class="keyword">local</span> hotspot = <span class="global">require</span>(<span class="string">"harness.hotspot"</span>)
+
+<span class="comment">-- build a collection of hot spots
+</span><span class="keyword">local</span> sensitiveAreas = {}
+
+<span class="comment">-- the hotspot must have the position and size arguments.
+</span><span class="global">table</span>.insert(sensitiveAreas, hotspot:new{
+  top=<span class="number">10</span>,
+  left=<span class="number">10</span>,
+  width=<span class="number">100</span>,
+  height=<span class="number">40</span>,
+  <span class="comment">-- we can add any of our own values we find useful.
+</span>  ourText=<span class="string">"click me quick"</span>,
+  ourFillTimeout=<span class="number">0</span>
+})
+
+<span class="global">table</span>.insert(sensitiveAreas, hotspot:new{
+  top=<span class="number">10</span>,
+  left=<span class="number">120</span>,
+  width=<span class="number">100</span>,
+  height=<span class="number">40</span>,
+  <span class="comment">-- we can add any of our own values we find useful.
+</span>  ourText=<span class="string">"click me hard"</span>,
+  ourFillTimeout=<span class="number">0</span>
+})
+
+<span class="global">table</span>.insert(sensitiveAreas, hotspot:new{
+  top=<span class="number">10</span>,
+  left=<span class="number">230</span>,
+  width=<span class="number">200</span>,
+  height=<span class="number">80</span>,
+  <span class="comment">-- we can add any of our own values we find useful.
+</span>  ourText=<span class="string">"click me gently"</span>,
+  ourFillTimeout=<span class="number">0</span>
+})
+
+<span class="keyword">function</span> love.mousepressed(x, y, button, istouch)
+
+  <span class="comment">-- test if any hot spot was touched
+</span>  <span class="keyword">for</span> _, spot <span class="keyword">in</span> <span class="global">ipairs</span>(sensitiveAreas) <span class="keyword">do</span>
+
+    <span class="keyword">if</span> spot.touched <span class="keyword">then</span>
+      <span class="comment">-- yep
+</span>      spot.ourFillTimeout = <span class="number">1</span>
+    <span class="keyword">end</span>
+
+  <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.mousemoved(x, y, dx, dy, istouch)
+
+  <span class="comment">-- test if any hot spot was touched
+</span>  <span class="keyword">for</span> _, spot <span class="keyword">in</span> <span class="global">ipairs</span>(sensitiveAreas) <span class="keyword">do</span>
+
+    <span class="comment">-- this sets "touched" to true on any hotspot under the cursor
+</span>    spot:mousemoved(x, y, dx, dy, istouch)
+
+  <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.update(dt)
+
+  heartflutter = <span class="global">math</span>.max(<span class="number">1</span>, heartflutter - dt)
+
+  <span class="comment">-- reduce the timeout for each hot spot
+</span>  <span class="keyword">for</span> _, spot <span class="keyword">in</span> <span class="global">ipairs</span>(sensitiveAreas) <span class="keyword">do</span>
+
+    <span class="keyword">if</span> spot.ourFillTimeout &gt; <span class="number">0</span> <span class="keyword">then</span>
+      spot.ourFillTimeout = spot.ourFillTimeout - dt * <span class="number">5</span>
+      heartflutter = <span class="number">1.5</span>
+    <span class="keyword">end</span>
+
+  <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.draw()
+
+  <span class="comment">-- draw our hot spots
+</span>  <span class="keyword">for</span> _, spot <span class="keyword">in</span> <span class="global">ipairs</span>(sensitiveAreas) <span class="keyword">do</span>
+
+    <span class="keyword">if</span> spot.ourFillTimeout &gt; <span class="number">0</span> <span class="keyword">then</span>
+      love.graphics.setColor(green)
+    <span class="keyword">else</span>
+      love.graphics.setColor(white)
+    <span class="keyword">end</span>
+
+    love.graphics.rectangle(<span class="string">"fill"</span>, spot.left, spot.top, spot.width, spot.height)
+    love.graphics.setColor(black)
+    love.graphics.printf(spot.ourText, spot.left, spot.top+spot.height/<span class="number">4</span>, spot.width, <span class="string">"center"</span>)
+
+    love.graphics.setColor(white)
+    love.graphics.draw(heart, <span class="number">120</span>, <span class="number">120</span>, <span class="number">0</span>, heartflutter, heartflutter, <span class="number">34</span>, <span class="number">34</span>)
+  <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.keypressed(key)
+  <span class="keyword">if</span> key == <span class="string">"escape"</span> <span class="keyword">then</span>
+    love.event.quit()
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-11-19 10:32:57 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

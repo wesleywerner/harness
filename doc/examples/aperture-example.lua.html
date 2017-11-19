@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><strong>aperture-example.lua</strong></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>aperture-example.lua</h2>
+<pre>
+<span class="comment">--[[
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see http://www.gnu.org/licenses/.
+]]</span><span class="comment">--
+</span>
+<span class="comment">-- the text we will be using
+</span><span class="keyword">local</span> loremipsum = <span class="string">[[Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip ex ea commodo consequat. Duis aute irure dolor inreprehenderit in voluptate velit esse cillum dolore eu fugiat nullapariatur. Excepteur sint occaecat cupidatat non proident, sunt inculpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip ex ea commodo consequat. Duis aute irure dolor inreprehenderit in voluptate velit esse cillum dolore eu fugiat nullapariatur. Excepteur sint occaecat cupidatat non proident, sunt inculpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed doeiusmod tempor incididunt ut labore et dolore magna aliq]]</span>
+
+<span class="keyword">local</span> aperture = <span class="global">require</span>(<span class="string">"harness.aperture"</span>)
+
+<span class="keyword">local</span> textaperture = aperture:new {
+
+  <span class="comment">-- The position of the aperture on your screen
+</span>  top=<span class="number">0</span>,
+  left=<span class="number">300</span>,
+
+  <span class="comment">-- The size of your aperture
+</span>  width=<span class="number">200</span>,
+  height=<span class="number">200</span>,
+
+  <span class="comment">-- Pages is number of pages available.
+</span>  pages=<span class="number">3</span>,
+
+  <span class="comment">-- Duration is the time in seconds the scroll animation lasts.
+</span>  <span class="comment">-- The default is 1 second.
+</span>  duration=<span class="number">1</span>,
+
+  <span class="comment">-- Easing is the function used for the scroll animation.
+</span>  <span class="comment">-- The default is "outCubic".
+</span>  easing=<span class="string">"inOutCubic"</span>,
+
+  <span class="comment">-- Landscape controls horizontal scrolling.
+</span>  <span class="comment">-- The default is false (vertical scrolling).
+</span>  landscape=<span class="keyword">false</span>,
+
+  <span class="comment">-- Factor is the size of each step per scroll.
+</span>  <span class="comment">-- The default is 1 and scrolls a full page each time.
+</span>  <span class="comment">-- A factor of 0.5 steps half a page at a time.
+</span>  factor=<span class="number">1</span>
+}
+
+
+<span class="keyword">function</span> love.mousemoved(x, y, dx, dy, istouch)
+
+  textaperture:mousemoved(x, y, dx, dy, istouch)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.update(dt)
+
+  textaperture:update(dt)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.wheelmoved(x, y)
+  <span class="keyword">if</span> y &gt; <span class="number">0</span> <span class="keyword">then</span>
+    textaperture:scrollUp()
+  <span class="keyword">else</span>
+    textaperture:scrollDown()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.draw()
+
+  <span class="comment">-- print the text without any aperture
+</span>  love.graphics.printf(loremipsum, <span class="number">10</span>, <span class="number">10</span>, <span class="number">200</span>)
+
+  <span class="comment">-- now apply the aperture and print the same text.
+</span>  <span class="comment">-- note how x and y are draws relative to the aperture.
+</span>  textaperture:apply()
+  love.graphics.printf(loremipsum, <span class="number">10</span>, <span class="number">10</span>, <span class="number">200</span>)
+  textaperture:release()
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.keypressed(key)
+  <span class="keyword">if</span> key == <span class="string">"escape"</span> <span class="keyword">then</span>
+    love.event.quit()
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-11-19 10:32:57 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

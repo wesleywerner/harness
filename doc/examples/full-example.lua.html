@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><strong>full-example.lua</strong></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>full-example.lua</h2>
+<pre>
+<span class="comment">--[[
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see http://www.gnu.org/licenses/.
+]]</span><span class="comment">--
+</span>
+<span class="keyword">local</span> black = {<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>}
+<span class="keyword">local</span> white = {<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>}
+<span class="keyword">local</span> red = {<span class="number">255</span>, <span class="number">64</span>, <span class="number">128</span>}
+<span class="keyword">local</span> green = {<span class="number">64</span>, <span class="number">255</span>, <span class="number">128</span>}
+<span class="keyword">local</span> blue = {<span class="number">64</span>, <span class="number">128</span>, <span class="number">255</span>}
+<span class="keyword">local</span> yellow = {<span class="number">255</span>, <span class="number">255</span>, <span class="number">64</span>}
+
+<span class="comment">-- the data model where player scores live
+</span><span class="keyword">local</span> scoredata = { player1=<span class="number">0</span>, player2=<span class="number">0</span> }
+
+<span class="comment">-- demonstrates the digit roller collection
+</span><span class="keyword">local</span> scorecounters = <span class="global">require</span>(<span class="string">"harness.digitroller"</span>):new()
+
+<span class="comment">-- tracks a sine value for effect
+</span><span class="keyword">local</span> sinecounter = <span class="number">0</span>
+
+<span class="comment">-- watch player scores for changes
+</span>scorecounters:add{
+  subject=scoredata,
+  target=<span class="string">"player1"</span>,
+  suffix=<span class="string">"points"</span>,
+  duration=<span class="number">2</span>,
+  easing=<span class="string">"outCubic"</span>,
+  left=<span class="number">30</span>,
+  top=<span class="number">300</span>
+}
+
+scorecounters:add{
+  subject=scoredata,
+  target=<span class="string">"player2"</span>,
+  suffix=<span class="string">"points"</span>,
+  left=<span class="number">30</span>,
+  top=<span class="number">320</span>
+}
+
+<span class="comment">-- demonstrates the aperture
+</span><span class="keyword">local</span> loremscroll = <span class="global">require</span>(<span class="string">"harness.aperture"</span>):new{
+  top=<span class="number">10</span>,
+  left=<span class="number">10</span>,
+  width=<span class="number">200</span>,
+  height=<span class="number">200</span>,
+  pages=<span class="number">4</span>,
+  duration=<span class="number">1</span>,
+  easing=<span class="string">"inOutQuad"</span>,
+  factor=<span class="number">0.5</span>
+}
+
+<span class="keyword">local</span> picturescroll = <span class="global">require</span>(<span class="string">"harness.aperture"</span>):new{
+  top=<span class="number">10</span>,
+  left=<span class="number">220</span>,
+  width=<span class="number">200</span>,
+  height=<span class="number">200</span>,
+  pages=<span class="number">3</span>,
+  duration=<span class="number">0.25</span>,
+  easing=<span class="string">"linear"</span>,
+  landscape=<span class="keyword">true</span>    <span class="comment">-- scrolls horizontally
+</span>}
+
+<span class="keyword">local</span> clickscroll = <span class="global">require</span>(<span class="string">"harness.aperture"</span>):new{
+  top=<span class="number">10</span>,
+  left=<span class="number">430</span>,
+  width=<span class="number">200</span>,
+  height=<span class="number">200</span>,
+  pages=<span class="number">2</span>
+}
+
+<span class="comment">-- defines the area for our test button.
+</span><span class="comment">-- The button will live inside one of our apertures, as such
+</span><span class="comment">-- these positions are relative to the aperture's position.
+</span><span class="keyword">local</span> hotspot = <span class="global">require</span>(<span class="string">"harness.hotspot"</span>)
+<span class="keyword">local</span> testbutton = hotspot:new {
+  left=<span class="number">30</span>,
+  top=<span class="number">240</span>,
+  width=<span class="number">120</span>,
+  height=<span class="number">40</span>,
+  counter=<span class="number">0</span>,
+  <span class="comment">-- action function called when aperture is clicked
+</span>  action = <span class="keyword">function</span>(self)
+    self.counter = self.counter + <span class="number">1</span>
+    <span class="keyword">local</span> increase = <span class="global">math</span>.random(<span class="number">10</span>, <span class="number">100</span>)
+    scoredata.player1 = scoredata.player1 + increase
+    scoredata.player2 = scoredata.player2 + increase
+  <span class="keyword">end</span>
+  }
+
+<span class="comment">-- insert the button into the click aperture
+</span>clickscroll:insert(testbutton)
+
+<span class="keyword">function</span> love.keypressed(key)
+  <span class="keyword">if</span> key == <span class="string">"escape"</span> <span class="keyword">then</span>
+    love.event.quit()
+  <span class="keyword">elseif</span> key == <span class="string">"r"</span> <span class="keyword">then</span>
+    <span class="comment">-- scroll the apertures programatically.
+</span>    <span class="comment">-- the page parameter is clamped for us so we can
+</span>    <span class="comment">-- set an out-of-bounds page without fretting.
+</span>    loremscroll:scrollTo(<span class="global">math</span>.random(<span class="number">1</span>, <span class="number">4</span>))
+    picturescroll:scrollTo(<span class="global">math</span>.random(<span class="number">1</span>, <span class="number">4</span>))
+    clickscroll:scrollTo(<span class="global">math</span>.random(<span class="number">1</span>, <span class="number">4</span>))
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.wheelmoved(x, y)
+  <span class="keyword">if</span> y &gt; <span class="number">0</span> <span class="keyword">then</span>
+    loremscroll:scrollUp()
+    picturescroll:scrollLeft()  <span class="comment">-- a synonymn for scrollUp
+</span>    clickscroll:scrollUp()
+  <span class="keyword">else</span>
+    loremscroll:scrollDown()
+    picturescroll:scrollRight() <span class="comment">-- a synonymn for scrollDown
+</span>    clickscroll:scrollDown()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- Pass mouse movement to the apertures. This is how they know
+</span><span class="comment">-- when the focus is on them.
+</span><span class="keyword">function</span> love.mousemoved(x, y, dx, dy, istouch)
+  loremscroll:mousemoved(x, y, dx, dy, istouch)
+  picturescroll:mousemoved(x, y, dx, dy, istouch)
+  clickscroll:mousemoved(x, y, dx, dy, istouch)
+<span class="keyword">end</span>
+
+<span class="comment">-- Tests clicking inside an aperture
+</span><span class="keyword">function</span> love.mousepressed(x, y, button, istouch)
+
+  <span class="keyword">if</span> button == <span class="number">1</span> <span class="keyword">then</span>
+    clickscroll:mousepressed(x, y, button, istouch)
+  <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.update(dt)
+  sinecounter = sinecounter + dt
+  loremscroll:update(dt)
+  picturescroll:update(dt)
+  clickscroll:update(dt)
+  scorecounters:update(dt)
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.draw()
+  drawLorem()
+  drawPictures()
+  drawClicks()
+
+  love.graphics.printf(<span class="string">[[The aperture provides a constrained view of a larger drawing. Like the photographer who touches the tips of her thumbs together, framing a shot. The aperture scrolls what can be seen using transforms. There is no underlying canvas involved.
+
+The digit roller simply watches a value on a table for changes. The roller then interpolates the displayed value via a tween, so it appears to count up or down.
+
+You may press 'r' to programmatically randomize the pages to display.]]</span>, <span class="number">100</span>, <span class="number">300</span>, <span class="number">400</span>)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> drawLorem()
+
+  <span class="comment">-- white background
+</span>  love.graphics.setColor(white)
+  love.graphics.rectangle(<span class="string">"fill"</span>,
+    loremscroll.left,
+    loremscroll.top,
+    loremscroll.width,
+    loremscroll.height)
+
+  <span class="comment">-- apply the transform
+</span>  loremscroll:apply()
+
+  <span class="comment">-- print lorem text
+</span>  love.graphics.setColor(black)
+  love.graphics.printf(
+  <span class="string">[[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquet libero nec tortor malesuada malesuada. Quisque quis nisi non arcu finibus semper. Vivamus est turpis, tincidunt eu vestibulum a, viverra eleifend nunc. Nulla augue dolor, hendrerit dapibus suscipit a, faucibus nec ex. Proin in faucibus turpis, at venenatis nisl. Pellentesque pulvinar consectetur enim, non pharetra leo condimentum in. Curabitur tincidunt dolor dui, sit amet convallis nisl sodales pellentesque. Vivamus euismod, metus at dapibus elementum, risus odio pharetra massa, vitae dapibus nisi nibh non lorem. Aenean in mauris scelerisque, volutpat ante non, cursus quam.
+
+  In sodales ullamcorper lorem vitae ornare. Integer et felis at est tincidunt consequat. Praesent tellus tellus, imperdiet sed nunc blandit, accumsan accumsan augue. Nullam id ante consequat, viverra tellus eu, efficitur nulla. Nulla ligula justo, commodo ut arcu sit amet, sollicitudin hendrerit magna. Duis porta pulvinar faucibus. Praesent accumsan semper purus ut interdum. Aenean commodo at magna nec tincidunt. Morbi tortor nisi, pulvinar scelerisque magna quis, bibendum hendrerit turpis. Vestibulum vel euismod libero, vel bibendum ipsum. Cras efficitur sapien id turpis ornare consectetur.]]</span>,
+  <span class="number">10</span>, <span class="number">10</span>, <span class="number">180</span>, <span class="string">"center"</span> )
+
+  <span class="comment">-- release the transform
+</span>  loremscroll:release()
+
+  <span class="comment">-- draw a nice box around our text
+</span>  love.graphics.setColor(white)
+  love.graphics.rectangle(<span class="string">"line"</span>,
+    loremscroll.left,
+    loremscroll.top,
+    loremscroll.width,
+    loremscroll.height
+    )
+
+  <span class="comment">-- print page info
+</span>  love.graphics.<span class="global">print</span>(
+    <span class="global">string</span>.format(<span class="string">"page %.1f of %d"</span>, loremscroll.page, loremscroll.pages),
+    loremscroll.left, loremscroll.top + loremscroll.height + <span class="number">10</span>)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> drawPictures()
+
+  <span class="comment">-- apply the transform
+</span>  picturescroll:apply()
+
+  <span class="comment">-- draw a hovering triangle
+</span>  love.graphics.setColor(red)
+  love.graphics.polygon(<span class="string">"fill"</span>,
+    <span class="number">60</span>+<span class="number">10</span>*<span class="global">math</span>.sin(sinecounter), <span class="number">80</span>+<span class="number">10</span>*<span class="global">math</span>.cos(sinecounter),
+    <span class="number">160</span>+<span class="number">10</span>*<span class="global">math</span>.sin(sinecounter), <span class="number">80</span>+<span class="number">10</span>*<span class="global">math</span>.sin(sinecounter),
+    <span class="number">110</span>+<span class="number">10</span>*<span class="global">math</span>.cos(sinecounter), <span class="number">180</span>+<span class="number">20</span>*<span class="global">math</span>.sin(sinecounter))
+
+  <span class="comment">-- draw a hydrogen atom
+</span>  love.graphics.setColor(green)
+  love.graphics.<span class="global">print</span>(<span class="string">"Hydrogen"</span>, <span class="number">270</span>, <span class="number">30</span>)
+  love.graphics.circle(<span class="string">"fill"</span>, <span class="number">300</span>, <span class="number">130</span>, <span class="number">20</span>)
+  love.graphics.circle(<span class="string">"line"</span>, <span class="number">300</span>, <span class="number">130</span>, <span class="number">60</span>)
+  love.graphics.setColor(yellow)
+  love.graphics.circle(<span class="string">"fill"</span>, <span class="number">300</span>+<span class="number">60</span>*<span class="global">math</span>.cos(sinecounter), <span class="number">130</span>+<span class="number">60</span>*<span class="global">math</span>.sin(sinecounter), <span class="number">4</span>)
+
+  <span class="comment">-- draw a bobbing ball
+</span>  love.graphics.setColor(blue)
+  love.graphics.rectangle(<span class="string">"fill"</span>, <span class="number">400</span>, <span class="number">40</span>, <span class="number">200</span>, <span class="number">180</span>)
+  love.graphics.setColor(white)
+  love.graphics.circle(<span class="string">"fill"</span>, <span class="number">500</span>+(<span class="number">40</span>*<span class="global">math</span>.cos(sinecounter*.<span class="number">1</span>)), <span class="number">45</span>+(<span class="number">8</span>*<span class="global">math</span>.sin(sinecounter)), <span class="number">20</span>)
+
+  <span class="comment">-- release the transform
+</span>  picturescroll:release()
+
+  <span class="comment">-- draw a nice box around our pictures
+</span>  love.graphics.setColor(white)
+  love.graphics.rectangle(<span class="string">"line"</span>,
+    picturescroll.left,
+    picturescroll.top,
+    picturescroll.width,
+    picturescroll.height
+    )
+
+  <span class="comment">-- print page info
+</span>  love.graphics.<span class="global">print</span>(
+    <span class="global">string</span>.format(<span class="string">"page %d of %d"</span>, picturescroll.page, picturescroll.pages),
+    picturescroll.left, picturescroll.top + picturescroll.height + <span class="number">10</span>)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> drawClicks()
+
+  <span class="comment">-- apply the transform
+</span>  clickscroll:apply()
+
+  <span class="comment">-- print helpful text
+</span>  love.graphics.setColor(white)
+  love.graphics.printf(<span class="string">"scroll down to test clicking a point in a scrolled area"</span>, <span class="number">10</span>, <span class="number">60</span>, <span class="number">150</span>)
+
+  <span class="comment">-- draw a really ugly button
+</span>  love.graphics.setColor(white)
+  love.graphics.rectangle(<span class="string">"fill"</span>, testbutton.left, testbutton.top,
+    testbutton.width, testbutton.height)
+
+  love.graphics.setColor(yellow)
+  love.graphics.rectangle(<span class="string">"line"</span>, testbutton.left, testbutton.top,
+    testbutton.width, testbutton.height)
+
+  love.graphics.setColor(black)
+  love.graphics.<span class="global">print</span>(<span class="global">string</span>.format(<span class="string">"clicked %d times"</span>, testbutton.counter),
+    testbutton.left+<span class="number">10</span>, testbutton.top+<span class="number">14</span>)
+
+  <span class="comment">-- draw the digit roller demo right inside this aperture.
+</span>  love.graphics.setColor(white)
+  scorecounters:draw()
+
+  <span class="comment">-- release the transform
+</span>  clickscroll:release()
+
+  <span class="comment">-- draw a nice box around our clicks
+</span>  love.graphics.setColor(white)
+  love.graphics.rectangle(<span class="string">"line"</span>,
+    clickscroll.left,
+    clickscroll.top,
+    clickscroll.width,
+    clickscroll.height
+    )
+
+  <span class="comment">-- print page info
+</span>  love.graphics.<span class="global">print</span>(
+    <span class="global">string</span>.format(<span class="string">"page %d of %d"</span>, clickscroll.page, clickscroll.pages),
+    clickscroll.left, clickscroll.top + clickscroll.height + <span class="number">10</span>)
+
+<span class="keyword">end</span></pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-11-19 10:32:57 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

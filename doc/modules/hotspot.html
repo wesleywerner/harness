@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><strong>hotspot</strong></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>hotspot</code></h1>
+<p>Provides a hotspot with focus tracking.</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>License</strong>: GPL v3</li>
+        <li><strong>Author</strong>: Wesley Werner</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#module:new">module:new (args)</a></td>
+	<td class="summary">Creates a new hotspot.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mousemoved">mousemoved (x, y, dx, dy, istouch)</a></td>
+	<td class="summary">Process mouse movement.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#args">args</a></td>
+	<td class="summary">A table of arguments for new hotspots.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#instance">instance</a></td>
+	<td class="summary">Lists properties available on the instance.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "module:new"></a>
+    <strong>module:new (args)</strong>
+    </dt>
+    <dd>
+    Creates a new hotspot.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">args</span>
+            <span class="types"><a class="type" href="../modules/hotspot.html#args">args</a></span>
+
+ A table of arguments.
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/hotspot.html#instance">instance</a></span>
+        A new hotspot instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mousemoved"></a>
+    <strong>mousemoved (x, y, dx, dy, istouch)</strong>
+    </dt>
+    <dd>
+    Process mouse movement.
+ Call this from your game loop to let the aperture determine if
+ it is in focus via the "touched" property.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+        </li>
+        <li><span class="parameter">y</span>
+
+        </li>
+        <li><span class="parameter">dx</span>
+
+        </li>
+        <li><span class="parameter">dy</span>
+
+        </li>
+        <li><span class="parameter">istouch</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "args"></a>
+    <strong>args</strong>
+    </dt>
+    <dd>
+    A table of arguments for new hotspots.
+ In addition to the mentioned parameters, you can add any other keys
+ you want. All keys are copied to the hotspot instance, which allows
+ you to access them later through the instance.
+
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">left</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The left screen position.
+
+        </li>
+        <li><span class="parameter">top</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The top screen position.
+
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The width in pixels.
+
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The height in pixels.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "instance"></a>
+    <strong>instance</strong>
+    </dt>
+    <dd>
+    Lists properties available on the instance.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">touched</span>
+            <span class="types"><span class="type">bool</span></span>
+
+ true while the cursor is over the hotspot. This is determined automatically
+ while you call <a href="../modules/hotspot.html#mousemoved">mousemoved</a>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-11-19 10:32:57 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

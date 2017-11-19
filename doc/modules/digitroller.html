@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><strong>digitroller</strong></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>digitroller</code></h1>
+<p>Provides a rolling number display.</p>
+<p>
+ The digit roller simply watches a value on a table for changes, this
+ value must be a number value. The roller then interpolates the displayed
+ value via a tween, so it appears to count up or down.
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>License</strong>: GPL v3</li>
+        <li><strong>Author</strong>: Wesley Werner</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#module:new">module:new ()</a></td>
+	<td class="summary">create a new digit roller collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#add">add (args)</a></td>
+	<td class="summary">Add a digit roller to the collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#update">update (dt)</a></td>
+	<td class="summary">Process animations.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#draw">draw ()</a></td>
+	<td class="summary">Draws all the digit rollers in the collection.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#args">args</a></td>
+	<td class="summary">A table of arguments for new digit rollers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#instance">instance</a></td>
+	<td class="summary">Lists properties available on the instance.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "module:new"></a>
+    <strong>module:new ()</strong>
+    </dt>
+    <dd>
+    create a new digit roller collection.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "add"></a>
+    <strong>add (args)</strong>
+    </dt>
+    <dd>
+    Add a digit roller to the collection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">args</span>
+            <span class="types"><a class="type" href="../modules/digitroller.html#args">args</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "update"></a>
+    <strong>update (dt)</strong>
+    </dt>
+    <dd>
+    Process animations.
+ Call this in you main game loop.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
+
+ Time delta as given by the Love callback
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "draw"></a>
+    <strong>draw ()</strong>
+    </dt>
+    <dd>
+    Draws all the digit rollers in the collection.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "args"></a>
+    <strong>args</strong>
+    </dt>
+    <dd>
+    A table of arguments for new digit rollers.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">subject</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
+ The table to watch.
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The key on the table to watch.
+
+        </li>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The time in seconds the rolling animation will last.
+ The default is 3 seconds.
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">left</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The left position in pixels (if using <a href="../modules/digitroller.html#draw">draw</a>)
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">top</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The top position in pixels (if using <a href="../modules/digitroller.html#draw">draw</a>)
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">suffix</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ Text to append to the printed value.
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">easing</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The name of easing function to use for the rolling animation.
+<p> List of easing functions: https://github.com/kikito/tween.lua#easing-functions
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "instance"></a>
+    <strong>instance</strong>
+    </dt>
+    <dd>
+    Lists properties available on the instance.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">number</span></span>
+
+ Represents the current display value of the digit roller.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-11-19 10:32:57 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
