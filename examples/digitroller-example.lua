@@ -15,53 +15,50 @@
 
 local roller = require("harness.digitroller")
 
--- Creating a new instance gives you a digit roller collection, this helps rolling multiple digits with ease.
-local scorecounters = roller:new()
-
 -- our data model where our values are kept
 local scoredata = { player1=0, player2=0 }
 
 -- add a digit roller to watch player 1's score
-local myRoller = scorecounters:add{
+local p1roller = roller:new{
     subject=scoredata,
     target="player1",
-    left=30,
-    top=30,
-    suffix="points to player 1",  -- optional
-    duration=2,                   -- optional
-    easing="outCubic",            -- optional
+    duration=0.5,     -- optional
+    easing="linear",  -- optional
+    top=30,           -- our custom property
+    left=30           -- our custom property
 }
 
 -- add another roller for player 2
-scorecounters:add{
+local p2roller = roller:new{
     subject=scoredata,
     target="player2",
-    left=30,
-    top=50,
-    suffix="points to player 2"
+    top=50,           -- our custom property
+    left=30           -- our custom property
 }
 
 -- update the collection to animate the rollers
 function love.update(dt)
-    scorecounters:update(dt)
+    p1roller:update(dt)
+    p2roller:update(dt)
 end
 
 function love.draw()
 
-    -- let the digit roller draw itself
-    scorecounters:draw()
+    love.graphics.print("Press any key to change the scores to a random number")
 
-    -- or you can control the drawing directly
-    local printedValue = string.format("%d %s (custom print)", myRoller.value, myRoller.suffix)
-    love.graphics.print(printedValue, myRoller.left, myRoller.top + 40)
+    local printedValue = string.format("p1 score: %d", p1roller.value)
+    love.graphics.print(printedValue, p1roller.left, p1roller.top)
+
+    local printedValue = string.format("p2 score: %d", p2roller.value)
+    love.graphics.print(printedValue, p2roller.left, p2roller.top)
 
 end
 
 function love.keypressed(key)
-  if key == "escape" then
-    love.event.quit()
-  else
-    scoredata.player1 = math.random(1, 100)
-    scoredata.player2 = math.random(1, 100)
-  end
+    if key == "escape" then
+        love.event.quit()
+    else
+        scoredata.player1 = math.random(10, 1000)
+        scoredata.player2 = math.random(10, 1000)
+    end
 end

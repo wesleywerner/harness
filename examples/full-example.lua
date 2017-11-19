@@ -21,16 +21,16 @@ local blue = {64, 128, 255}
 local yellow = {255, 255, 64}
 
 -- the data model where player scores live
-local scoredata = { player1=0, player2=0 }
+local scoredata = { player1=0 }
 
--- demonstrates the digit roller collection
-local scorecounters = require("harness.digitroller"):new()
+-- demonstrates the digit roller
+local roller = require("harness.digitroller")
 
 -- tracks a sine value for effect
 local sinecounter = 0
 
 -- watch player scores for changes
-scorecounters:add{
+local p1score = roller:new{
   subject=scoredata,
   target="player1",
   suffix="points",
@@ -38,14 +38,6 @@ scorecounters:add{
   easing="outCubic",
   left=30,
   top=300
-}
-
-scorecounters:add{
-  subject=scoredata,
-  target="player2",
-  suffix="points",
-  left=30,
-  top=320
 }
 
 -- demonstrates the aperture
@@ -92,9 +84,7 @@ local testbutton = hotspot:new {
   -- action function called when aperture is clicked
   action = function(self)
     self.counter = self.counter + 1
-    local increase = math.random(10, 100)
-    scoredata.player1 = scoredata.player1 + increase
-    scoredata.player2 = scoredata.player2 + increase
+    scoredata.player1 = scoredata.player1 + math.random(10, 100)
   end
   }
 
@@ -148,7 +138,7 @@ function love.update(dt)
   loremscroll:update(dt)
   picturescroll:update(dt)
   clickscroll:update(dt)
-  scorecounters:update(dt)
+  p1score:update(dt)
 end
 
 function love.draw()
@@ -273,7 +263,7 @@ function drawClicks()
 
   -- draw the digit roller demo right inside this aperture.
   love.graphics.setColor(white)
-  scorecounters:draw()
+  love.graphics.print(string.format("%d", p1score.value), p1score.left, p1score.top)
 
   -- release the transform
   clickscroll:release()

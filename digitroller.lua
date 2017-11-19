@@ -14,21 +14,16 @@
 ]]--
 
 --- Provides a rolling number display.
--- The digit roller simply watches a value on a table for changes, this
--- value must be a number value. The roller then interpolates the displayed
+-- The digit roller simply watches a value on a table for changes.
+-- The roller then interpolates the displayed
 -- value via a tween, so it appears to count up or down.
 --
 -- @author Wesley Werner
 -- @license GPL v3
 -- @module digitroller
 
-local module = {}
 local tween = require("harness.tween")
-
--- provides the digit roller instance functions
-local digit_mt = {}
-
--- provides the digit roller collection functions
+local module = {}
 local digitroller = {}
 
 --- A table of arguments for new digit rollers.
@@ -42,16 +37,7 @@ local digitroller = {}
 --
 -- @tfield[opt] number duration
 -- The time in seconds the rolling animation will last.
--- The default is 3 seconds.
---
--- @tfield[opt] number left
--- The left position in pixels (if using @{draw})
---
--- @tfield[opt] number top
--- The top position in pixels (if using @{draw})
---
--- @tfield[opt] string suffix
--- Text to append to the printed value.
+-- The default is 1 second.
 --
 -- @tfield string easing
 -- The name of easing function to use for the rolling animation.
@@ -66,22 +52,13 @@ local digitroller = {}
 -- Represents the current display value of the digit roller.
 
 
---- create a new digit roller collection.
---
--- @treturn table
-function module:new()
-
-  local manager = {}
-  manager.collection = {}
-  setmetatable(manager, { __index = digitroller })
-  return manager
-
-end
-
---- Add a digit roller to the collection.
+--- Create a digit roller.
 --
 -- @tparam args args
-function digitroller:add(args)
+--
+-- @treturn instance
+-- A digit roller instance.
+function module:new(args)
 
   if not args.subject then
     error("A digit roller must have a subject, a table to watch")
@@ -105,21 +82,16 @@ function digitroller:add(args)
   -- set defaults
   instance.top = instance.top or 0
   instance.left = instance.left or 0
-  instance.limit = instance.limit or 200
-  instance.duration = instance.duration or 3
-  instance.suffix = instance.suffix or ""
-  instance.align = instance.align or "left"
+  instance.duration = instance.duration or 1
   instance.easing = instance.easing or "outCubic"
   instance.value = instance.subject[instance.target]
+  instance.targetvalue = instance.subject[instance.target]
 
   -- apply instance functions
-  setmetatable(instance, { __index = digit_mt })
+  setmetatable(instance, { __index = digitroller })
 
   -- apply first time tweening
   instance:applytween()
-
-  -- collect this label
-  table.insert(self.collection, instance)
 
   return instance
 
@@ -131,26 +103,15 @@ end
 -- @tparam number dt
 -- Time delta as given by the Love callback
 function digitroller:update(dt)
-  for _, label in ipairs(self.collection) do
-    label.tween:update(dt)
-    if label.value ~= label.subject[label.target] then
-      label:applytween()
-    end
+  self.tween:update(dt)
+  if self.targetvalue ~= self.subject[self.target] then
+    self.targetvalue = self.subject[self.target]
+    self:applytween()
   end
 end
 
---- Draws all the digit rollers in the collection.
-function digitroller:draw()
-  for _, label in ipairs(self.collection) do
-    love.graphics.printf(
-      string.format("%d %s", label.value, label.suffix),
-      label.left, label.top, label.limit, label.align)
-  end
-end
-
-function digit_mt:applytween()
-  self.tween = tween.new(self.duration, self,
-    { value=self.subject[self.target] }, self.easing)
+function digitroller:applytween()
+  self.tween = tween.new(self.duration, self, { value=self.targetvalue }, self.easing)
 end
 
 return module
