@@ -347,6 +347,26 @@ The hotspot is a simple yet magical thing. Use it to track clicking on areas eas
 `hotspot.touched`: true while the cursor is over the hotspot.
 
 
+# document generation
+
+LDoc is used to generate documentation for the source code, it is included as a git submodule. It requires the penlight rock.
+
+```
+# pull the LDoc submodule
+git submodule init && git submodule update
+
+# install penlight dependency
+luarocks install penlight
+```
+
+Run generation:
+
+```
+lua LDoc/ldoc.lua .
+```
+
+Find the documentation under `doc/`.
+
 # license
 
   This program is free software: you can redistribute it and/or modify
