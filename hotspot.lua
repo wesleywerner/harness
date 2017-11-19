@@ -14,7 +14,7 @@
 ]]--
 
 local module = {}
-local hotspot_mt = {}
+local hotspot = {}
 
 function module:new(args)
 
@@ -30,13 +30,13 @@ function module:new(args)
   end
 
   -- apply instance functions
-  setmetatable(instance, { __index = hotspot_mt })
+  setmetatable(instance, { __index = hotspot })
 
   return instance
 
 end
 
-function hotspot_mt:touched(x, y)
+function hotspot:touched(x, y)
   return x > self.left and x < self.left + self.width
     and y > self.top and y < self.top + self.height
 end
