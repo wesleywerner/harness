@@ -113,9 +113,17 @@ function love.draw()
     love.graphics.setColor(black)
     love.graphics.printf(spot.ourText, spot.left, spot.top+spot.height/4, spot.width, "center")
 
-    love.graphics.setColor(white)
-    love.graphics.draw(heart, 120, 120, 0, heartflutter, heartflutter, 34, 34)
+    -- draw a border around touched hotspots
+    if spot.touched then
+      love.graphics.setColor(pink)
+      love.graphics.rectangle("line", spot.left, spot.top, spot.width, spot.height)
+    end
+
   end
+
+  -- draw a fluttering heart
+  love.graphics.setColor(white)
+  love.graphics.draw(heart, 120, 120, 0, heartflutter, heartflutter, 34, 34)
 
 end
 
