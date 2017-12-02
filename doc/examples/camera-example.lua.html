@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><strong>camera-example.lua</strong></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>camera-example.lua</h2>
+<pre>
+<span class="comment">--[[
+   camera-example.lua
+
+   Copyright 2017 wesley werner &lt;wesley.werner@gmail.com&gt;
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see http://www.gnu.org/licenses/.
+
+]]</span><span class="comment">--
+</span>
+<span class="keyword">local</span> camera = <span class="global">require</span>(<span class="string">"harness.camera"</span>)
+<span class="keyword">local</span> scale = <span class="number">5</span>
+
+<span class="keyword">function</span> love.<span class="global">load</span>()
+
+    love.graphics.setDefaultFilter( <span class="string">"nearest"</span>, <span class="string">"nearest"</span>, <span class="number">1</span> )
+
+    background = love.graphics.newImage( <span class="string">"swamp-300px.png"</span> )
+
+    <span class="comment">-- camera world size is our image size
+</span>    camera:worldSize(background:getWidth() * scale, background:getHeight() * scale)
+
+    <span class="comment">-- frame is what we see at any one time
+</span>    camera:frame(<span class="number">20</span>, <span class="number">20</span>, <span class="number">400</span>, <span class="number">400</span>)
+
+    love.graphics.setFont( love.graphics.newFont( <span class="number">10</span> ) )
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.update(dt)
+
+    camera:update(dt)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.draw()
+
+    <span class="comment">-- pose the camera. everything drawn now is clipped and framed.
+</span>    camera:pose()
+
+    <span class="comment">-- scale up
+</span>    love.graphics.scale(scale, scale)
+
+    <span class="comment">-- draw the image
+</span>    love.graphics.draw(background)
+
+    <span class="comment">-- print image credits
+</span>    love.graphics.printf(<span class="string">"Frog On Bluish Pond by schugschug (openclipart.org/detail/117031/frog-on-bluish-pond)"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">400</span>, <span class="string">"center"</span>)
+
+    <span class="comment">-- relax the camera. drawing returns to normal
+</span>    camera:relax()
+
+    <span class="comment">-- draw a box around the camera frame
+</span>    love.graphics.rectangle(<span class="string">"line"</span>, camera.frameLeft, camera.frameTop,
+    camera.frameWidth, camera.frameHeight)
+
+    <span class="comment">-- print some help text
+</span>    love.graphics.<span class="global">print</span>(<span class="string">"use arrow keys to scroll, a/d to switch the frame position"</span>)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.keypressed(key)
+
+    <span class="keyword">if</span> key == <span class="string">"escape"</span> <span class="keyword">then</span>
+        love.event.quit()
+    <span class="keyword">elseif</span> key == <span class="string">"left"</span> <span class="keyword">then</span>
+        camera:moveBy(<span class="number">100</span>, <span class="number">0</span>)
+    <span class="keyword">elseif</span> key == <span class="string">"right"</span> <span class="keyword">then</span>
+        camera:moveBy(-<span class="number">100</span>, <span class="number">0</span>)
+    <span class="keyword">elseif</span> key == <span class="string">"up"</span> <span class="keyword">then</span>
+        camera:moveBy(<span class="number">0</span>, <span class="number">100</span>)
+    <span class="keyword">elseif</span> key == <span class="string">"down"</span> <span class="keyword">then</span>
+        camera:moveBy(<span class="number">0</span>, -<span class="number">100</span>)
+    <span class="keyword">elseif</span> key == <span class="string">"a"</span> <span class="keyword">then</span>
+        camera:frame(<span class="number">20</span>, camera.frameTop, camera.frameWidth, camera.frameHeight)
+    <span class="keyword">elseif</span> key == <span class="string">"d"</span> <span class="keyword">then</span>
+        camera:frame(<span class="number">300</span>, camera.frameTop, camera.frameWidth, camera.frameHeight)
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span></pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-12-02 14:56:38 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

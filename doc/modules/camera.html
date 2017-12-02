@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><strong>camera</strong></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/camera-example.lua.html">camera-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>camera</code></h1>
+<p>Provides a camera to limit drawing to arbitrary positions.</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#module:update">module:update (dt)</a></td>
+	<td class="summary">Updates camera motion</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:worldSize">module:worldSize (width, height)</a></td>
+	<td class="summary">Set the world size that the camera can scroll within.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:frame">module:frame (left, top, width, height)</a></td>
+	<td class="summary">Set the size of the frame visible through the camera.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:lookAt">module:lookAt (x, y)</a></td>
+	<td class="summary">Scroll the camera to a position in it's world.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:moveBy">module:moveBy (dx, dy)</a></td>
+	<td class="summary">Move the camera position relative to it's current position.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:center">module:center (x, y)</a></td>
+	<td class="summary">Center the camera frame on a position.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:pose">module:pose ()</a></td>
+	<td class="summary">Prepare for drawing the contents of the camera world
+ This applies transforms and clipping.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:relax">module:relax ()</a></td>
+	<td class="summary">Relax the camera when done drawing world contents.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "module:update"></a>
+    <strong>module:update (dt)</strong>
+    </dt>
+    <dd>
+    Updates camera motion
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:worldSize"></a>
+    <strong>module:worldSize (width, height)</strong>
+    </dt>
+    <dd>
+    Set the world size that the camera can scroll within.
+ Camera movement is constrained within this size.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:frame"></a>
+    <strong>module:frame (left, top, width, height)</strong>
+    </dt>
+    <dd>
+    Set the size of the frame visible through the camera.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">left</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">top</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:lookAt"></a>
+    <strong>module:lookAt (x, y)</strong>
+    </dt>
+    <dd>
+    Scroll the camera to a position in it's world.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:moveBy"></a>
+    <strong>module:moveBy (dx, dy)</strong>
+    </dt>
+    <dd>
+    Move the camera position relative to it's current position.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dx</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">dy</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:center"></a>
+    <strong>module:center (x, y)</strong>
+    </dt>
+    <dd>
+    Center the camera frame on a position.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:pose"></a>
+    <strong>module:pose ()</strong>
+    </dt>
+    <dd>
+    Prepare for drawing the contents of the camera world
+ This applies transforms and clipping.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:relax"></a>
+    <strong>module:relax ()</strong>
+    </dt>
+    <dd>
+    Relax the camera when done drawing world contents.
+ This releases transform and clipping, restoring normal drawing state.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-12-02 14:56:38 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
