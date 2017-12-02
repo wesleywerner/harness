@@ -46,6 +46,12 @@ The hotspot is a simple yet magical thing. Use it to track clicking on areas eas
 
 [Documentation](doc/modules/hotspot.html)
 
+# camera
+
+Provides a camera to limit drawing to arbitrary positions. It allows drawing scrollable surfaces inside a frame, the motion of moving the camera is fluid, and it can look at any arbitrary point inside it's view. It also provides a function to center the camera on any point.
+
+![camera screenshot](figures/figure2.png)
+
 # document generation
 
 LDoc is used to generate documentation for the source code, it is included as a git submodule. It requires the penlight rock.
