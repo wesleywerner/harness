@@ -173,4 +173,26 @@ function module:relax()
 
 end
 
+--- Convert a screen point to a point relative to the camera's frame.
+--
+-- @tparam number x
+-- @tparam number y
+--
+-- @treturn number
+-- x, y or nil if the given point is outside the frame.
+function module:pointToFrame(x, y)
+
+    if x < self.frameLeft or x > self.frameLeft + self.frameWidth then
+        return nil
+    end
+
+    if y < self.frameTop or y > self.frameTop + self.frameHeight then
+        return nil
+    end
+
+    return clamp(x - self.x - self.frameLeft, 0, self.worldWidth),
+        clamp(y - self.y - self.frameTop, 0, self.worldHeight)
+
+end
+
 return module

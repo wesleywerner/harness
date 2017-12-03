@@ -20,6 +20,7 @@
 
 local camera = require("harness.camera")
 local scale = 5
+local mousePositionInFrame = nil
 
 function love.load()
 
@@ -31,7 +32,7 @@ function love.load()
     camera:worldSize(background:getWidth() * scale, background:getHeight() * scale)
 
     -- frame is what we see at any one time
-    camera:frame(20, 20, 400, 400)
+    camera:frame(20, 60, 400, 400)
 
     love.graphics.setFont( love.graphics.newFont( 10 ) )
 
@@ -67,6 +68,10 @@ function love.draw()
     -- print some help text
     love.graphics.print("use arrow keys to scroll, a/d to switch the frame position")
 
+    if mousePositionInFrame then
+        love.graphics.print(string.format("point in frame: %d, %d", mousePositionInFrame.x, mousePositionInFrame.y), 0, 10)
+    end
+
 end
 
 function love.keypressed(key)
@@ -85,6 +90,17 @@ function love.keypressed(key)
         camera:frame(20, camera.frameTop, camera.frameWidth, camera.frameHeight)
     elseif key == "d" then
         camera:frame(300, camera.frameTop, camera.frameWidth, camera.frameHeight)
+    end
+
+end
+
+function love.mousemoved( x, y, dx, dy, istouch )
+
+    x, y = camera:pointToFrame( x, y )
+    if x and y then
+        mousePositionInFrame = { x = x, y = y }
+    else
+        mousePositionInFrame = nil
     end
 
 end
