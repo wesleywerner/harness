@@ -52,6 +52,12 @@ Provides a camera to limit drawing to arbitrary positions. It allows drawing scr
 
 ![camera screenshot](figures/figure2.png)
 
+# trig
+
+Provides some trigonometry functions.
+
+[Documentation](doc/modules/trig.html)
+
 # document generation
 
 LDoc is used to generate documentation for the source code, it is included as a git submodule. It requires the penlight rock.

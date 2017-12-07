@@ -2,7 +2,8 @@ file = {
   "aperture.lua",
   "camera.lua",
   "digitroller.lua",
-  "hotspot.lua"
+  "hotspot.lua",
+  "trig.lua"
 }
 examples = {
   "examples",

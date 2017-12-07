@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+  <li><strong>trig</strong></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/camera-example.lua.html">camera-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+  <li><a href="../examples/trig-example.lua.html">trig-example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>trig</code></h1>
+<p>Provides trigonometry functions.</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>License</strong>: GPL v3</li>
+        <li><strong>Author</strong>: Wesley Werner</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#module:angle">module:angle (x1, y1, x2, y2)</a></td>
+	<td class="summary">Returns the angle between two points.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:distance">module:distance (x1, y1, x2, y2)</a></td>
+	<td class="summary">Returns the distance between two points.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:pointOnCircle">module:pointOnCircle (cx, cy, r, a)</a></td>
+	<td class="summary">Returns a point on a circle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:limitPointToCircle">module:limitPointToCircle (cx, cy, x, y, r)</a></td>
+	<td class="summary">Clamp a point to a circular range.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "module:angle"></a>
+    <strong>module:angle (x1, y1, x2, y2)</strong>
+    </dt>
+    <dd>
+    Returns the angle between two points.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x1</span>
+
+        </li>
+        <li><span class="parameter">y1</span>
+
+        </li>
+        <li><span class="parameter">x2</span>
+
+        </li>
+        <li><span class="parameter">y2</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:distance"></a>
+    <strong>module:distance (x1, y1, x2, y2)</strong>
+    </dt>
+    <dd>
+    Returns the distance between two points.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x1</span>
+
+        </li>
+        <li><span class="parameter">y1</span>
+
+        </li>
+        <li><span class="parameter">x2</span>
+
+        </li>
+        <li><span class="parameter">y2</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:pointOnCircle"></a>
+    <strong>module:pointOnCircle (cx, cy, r, a)</strong>
+    </dt>
+    <dd>
+    Returns a point on a circle.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cx</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The origin of the circle
+
+        </li>
+        <li><span class="parameter">cy</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The origin of the circle
+
+        </li>
+        <li><span class="parameter">r</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The circle radius
+
+        </li>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The angle of the point to the origin.
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        x, y
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:limitPointToCircle"></a>
+    <strong>module:limitPointToCircle (cx, cy, x, y, r)</strong>
+    </dt>
+    <dd>
+    Clamp a point to a circular range.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cx</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The origin of the circle
+
+        </li>
+        <li><span class="parameter">cy</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The origin of the circle
+
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The goal point to reach
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The goal point to reach
+
+        </li>
+        <li><span class="parameter">r</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The circle radius
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        x, y
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-12-07 22:28:09 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
