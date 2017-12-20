@@ -21,7 +21,8 @@
 -- @module aperture
 
 local module = {}
-local tween = require("harness.tween")
+local thispath = select('1', ...):match(".+%.") or ""
+local tween = require(thispath.."tween")
 local aperture = {}
 
 --- A table of arguments for new apertures.
@@ -87,7 +88,7 @@ local aperture = {}
 function module:new(args)
 
   -- inherit from the hotspot
-  local hotspot_module = require("harness.hotspot")
+  local hotspot_module = require(thispath.."hotspot")
   local instance = hotspot_module:new(args)
 
   -- save the hotspot mousemoved function so we can overwrite it

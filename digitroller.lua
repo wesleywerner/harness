@@ -22,7 +22,8 @@
 -- @license GPL v3
 -- @module digitroller
 
-local tween = require("harness.tween")
+local thispath = select('1', ...):match(".+%.") or ""
+local tween = require(thispath.."tween")
 local module = {}
 local digitroller = {}
 
