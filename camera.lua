@@ -132,6 +132,26 @@ function module:lookAt(x, y)
 
 end
 
+--- Point the camera to a position with instant results.
+--
+-- @tparam number x
+-- @tparam number y
+function module:instant(x, y)
+
+    self.frames = 0
+    self.x = x
+    self.y = y
+    self.fromX = x
+    self.fromY = y
+
+    -- clamp to the world
+    self.targetX = clamp(x, - self.worldWidth + self.frameWidth, 0 )
+    self.targetY = clamp(y, - self.worldHeight + self.frameHeight, 0 )
+
+    self.time = 1
+
+end
+
 --- Move the camera position relative to it's current position.
 --
 -- @tparam number dx
