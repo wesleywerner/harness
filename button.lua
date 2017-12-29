@@ -16,6 +16,7 @@
 --- Provides a clickable button.
 -- This acts similar to a @{hotspot}, with the exception you don't
 -- specify the size, which is automatically measured from the button text.
+-- It provides high flexibility as shown in @{switch-example.lua}
 --
 -- @author Wesley Werner
 -- @license GPL v3

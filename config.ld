@@ -3,6 +3,7 @@ file = {
   "camera.lua",
   "digitroller.lua",
   "hotspot.lua",
+  "button.lua",
   "trig.lua"
 }
 examples = {
