@@ -45,18 +45,33 @@ local hotspot = {}
 --- Lists properties available on the instance.
 -- @table instance
 --
--- @tfield bool touched
--- true while the cursor is over the hotspot. This is determined automatically
+-- @tfield bool focused
+-- true while the focus is over the hotspot. This is determined
 -- while you call @{mousemoved}
+--
+-- @tfield bool down
+-- true while a click/touch is pressed on the hotspot. This is determined
+-- while you call @{mousepressed}
+--
+-- @tfield number left
+-- The x position
+--
+-- @tfield number top
+-- The y position
+--
+-- @tfield number width
+-- The width of the element
+--
+-- @tfield number height
+-- The height of the element
 
 
---- Creates a new hotspot.
+--- Creates a new instance.
 --
 -- @tparam args args
 -- A table of arguments.
 --
 -- @treturn instance
--- A new hotspot instance
 function module:new(args)
 
     if not args.top or not args.left or not args.width or not args.height then
@@ -85,30 +100,36 @@ function module:new(args)
 end
 
 --- Placeholder function.
--- Hotspots do not process any updates.
+-- This element does not process any updates
 --
 -- @tparam number dt
--- Time delta as given by the Love callback
+-- delta time as given by Love
 function hotspot:update(dt)
 
 end
 
---- Process mouse movement.
+--- Process mouse/touch movement.
+-- Call this from your main loop so the element knows when it has
+-- focus, which flags the "focused" property true.
 function hotspot:mousemoved(x, y, dx, dy, istouch)
 
     self.focused = self:testFocus(x, y)
 
 end
 
---- Process mouse presses.
+--- Process pressed clicks/touches.
+-- Call this from your main loop so the element knows when it is
+-- pressed on, which flags the "down" property true.
 function hotspot:mousepressed(x, y, button, istouch)
 
     self.down = self.focused
 
 end
 
---- Process mouse releases.
--- This is the function that triggers the callback function on the control.
+--- Process click/touch releases.
+-- Call this from your main loop so the element knows when a press
+-- is released from it, which flags the "down" property false
+-- and fires the "callback" function if it is present.
 function hotspot:mousereleased(x, y, button, istouch)
 
     self.down = false
@@ -119,17 +140,17 @@ function hotspot:mousereleased(x, y, button, istouch)
 
 end
 
---- Tests if a point is over the control.
--- Used internally by @{mousepressed}
+--- Tests if a point is over the element.
+-- Used internally by @{mousemoved}
 --
 -- @tparam number x
--- The x point
+-- The x position to test against
 --
 -- @tparam number y
--- The y point
+-- The y position to test against
 --
 -- @treturn bool
--- True if the point is over the control.
+-- true if the point is over the element
 function hotspot:testFocus(x, y)
 
     return x > self.left and x < self.left + self.width
@@ -138,7 +159,7 @@ function hotspot:testFocus(x, y)
 end
 
 --- Placeholder function.
--- Hotspots do not draw anything, this is user controlled.
+-- This element does not draw anything, this is user controlled
 function hotspot:draw()
 
 end
