@@ -21,114 +21,74 @@ local heart = love.graphics.newImage("heart.png")
 local heartflutter = 0
 
 local hotspot = require("harness.hotspot")
-
--- build a collection of hot spots
-local sensitiveAreas = {}
-
--- the hotspot must have the position and size arguments.
-table.insert(sensitiveAreas, hotspot:new{
-  top=10,
-  left=10,
-  width=100,
-  height=40,
-  -- we can add any of our own values we find useful.
-  ourText="click me quick",
-  ourFillTimeout=0
-})
-
-table.insert(sensitiveAreas, hotspot:new{
-  top=10,
-  left=120,
-  width=100,
-  height=40,
-  -- we can add any of our own values we find useful.
-  ourText="click me hard",
-  ourFillTimeout=0
-})
-
-table.insert(sensitiveAreas, hotspot:new{
-  top=10,
-  left=230,
-  width=200,
-  height=80,
-  -- we can add any of our own values we find useful.
-  ourText="click me gently",
-  ourFillTimeout=0
-})
+local mysweetspot = hotspot:new{
+    top=10,
+    left=10,
+    width=100,
+    height=40,
+    -- we can add any of our own values we find useful.
+    ourText="click me quick",
+    callback = function(hotspot)
+        hotspot.ourText = "click me " .. ({"quick", "hard", "fast"})[math.random(1, 3)]
+        heartflutter = 1.5
+        print("hotspot clicked "..os.date("%c", os.time()))
+        end
+    }
 
 function love.mousepressed(x, y, button, istouch)
 
-  -- test if any hot spot was touched
-  for _, spot in ipairs(sensitiveAreas) do
+    mysweetspot:mousepressed(x, y, button, istouch)
 
-    if spot.touched then
-      -- yep
-      spot.ourFillTimeout = 1
-    end
+end
 
-  end
+function love.mousereleased(x, y, button, istouch)
+
+    mysweetspot:mousereleased(x, y, button, istouch)
 
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
 
-  -- test if any hot spot was touched
-  for _, spot in ipairs(sensitiveAreas) do
-
-    -- this sets "touched" to true on any hotspot under the cursor
-    spot:mousemoved(x, y, dx, dy, istouch)
-
-  end
+    mysweetspot:mousemoved(x, y, dx, dy, istouch)
 
 end
 
 function love.update(dt)
 
-  heartflutter = math.max(1, heartflutter - dt)
+    mysweetspot:update(dt)
 
-  -- reduce the timeout for each hot spot
-  for _, spot in ipairs(sensitiveAreas) do
-
-    if spot.ourFillTimeout > 0 then
-      spot.ourFillTimeout = spot.ourFillTimeout - dt * 5
-      heartflutter = 1.5
-    end
-
-  end
+    heartflutter = math.max(1, heartflutter - dt)
 
 end
 
 function love.draw()
 
-  -- draw our hot spots
-  for _, spot in ipairs(sensitiveAreas) do
+    -- Draw the hotspot here, we could also have given mysweetspot
+    -- a draw function and called mysweetspot:draw()
 
-    if spot.ourFillTimeout > 0 then
-      love.graphics.setColor(green)
+    if mysweetspot.down then
+        love.graphics.setColor(green)
+    elseif mysweetspot.focused then
+        love.graphics.setColor(pink)
     else
-      love.graphics.setColor(white)
+        love.graphics.setColor(white)
     end
 
-    love.graphics.rectangle("fill", spot.left, spot.top, spot.width, spot.height)
+    love.graphics.rectangle("fill", mysweetspot.left, mysweetspot.top,
+        mysweetspot.width, mysweetspot.height)
+
     love.graphics.setColor(black)
-    love.graphics.printf(spot.ourText, spot.left, spot.top+spot.height/4, spot.width, "center")
 
-    -- draw a border around touched hotspots
-    if spot.touched then
-      love.graphics.setColor(pink)
-      love.graphics.rectangle("line", spot.left, spot.top, spot.width, spot.height)
-    end
+    love.graphics.printf(mysweetspot.ourText, mysweetspot.left, mysweetspot.top + mysweetspot.height/4, mysweetspot.width, "center")
 
-  end
-
-  -- draw a fluttering heart
-  love.graphics.setColor(white)
-  love.graphics.draw(heart, 120, 120, 0, heartflutter, heartflutter, 34, 34)
+    -- draw a fluttering heart
+    love.graphics.setColor(white)
+    love.graphics.draw(heart, 120, 120, 0, heartflutter, heartflutter, 34, 34)
 
 end
 
 function love.keypressed(key)
-  if key == "escape" then
-    love.event.quit()
-  end
+    if key == "escape" then
+        love.event.quit()
+    end
 end

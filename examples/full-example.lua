@@ -81,8 +81,8 @@ local testbutton = hotspot:new {
   width=120,
   height=40,
   counter=0,
-  -- action function called when aperture is clicked
-  action = function(self)
+  -- callback function called when aperture is clicked
+  callback = function(self)
     self.counter = self.counter + 1
     scoredata.player1 = scoredata.player1 + math.random(10, 100)
   end
@@ -129,6 +129,14 @@ function love.mousepressed(x, y, button, istouch)
 
   if button == 1 then
     clickscroll:mousepressed(x, y, button, istouch)
+  end
+
+end
+
+function love.mousereleased(x, y, button, istouch)
+
+  if button == 1 then
+    clickscroll:mousereleased(x, y, button, istouch)
   end
 
 end
