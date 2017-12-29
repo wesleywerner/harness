@@ -50,7 +50,17 @@ The hotspot is a simple yet magical thing. Use it to track clicking on areas eas
 
 Provides a camera to limit drawing to arbitrary positions. It allows drawing scrollable surfaces inside a frame, the motion of moving the camera is fluid, and it can look at any arbitrary point inside it's view. It also provides a function to center the camera on any point.
 
+[Documentation](doc/modules/camera.html)
+
 ![camera screenshot](figures/figure2.png)
+
+# buttons
+
+Provides a clickable button similar to a hotspot, with the exception you don't specify the size, which is automatically measured from the button text. It provides high flexibility as demonstrated in the examples by creating a two-state switch component.
+
+[Documentation](doc/modules/button.html)
+
+![button screenshot](figures/figure3.png)
 
 # trig
 
