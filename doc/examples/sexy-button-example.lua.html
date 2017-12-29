@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/button-example.lua.html">button-example.lua</a></li>
+  <li><a href="../examples/camera-example.lua.html">camera-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+  <li><strong>sexy-button-example.lua</strong></li>
+  <li><a href="../examples/switch-example.lua.html">switch-example.lua</a></li>
+  <li><a href="../examples/trig-example.lua.html">trig-example.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+  <li><a href="../modules/button.html">button</a></li>
+  <li><a href="../modules/trig.html">trig</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>sexy-button-example.lua</h2>
+<pre>
+<span class="comment">--[[
+   Copyright 2017 wesley werner &lt;wesley.werner@gmail.com&gt;
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see http://www.gnu.org/licenses/.
+
+]]</span><span class="comment">--
+</span>
+<span class="keyword">function</span> love.<span class="global">load</span>()
+
+    <span class="comment">-- set button font
+</span>    love.graphics.setFont(love.graphics.newFont(<span class="number">24</span>))
+
+    <span class="keyword">local</span> button = <span class="global">require</span>(<span class="string">"harness.button"</span>)
+
+    <span class="comment">-- button image is a cut-up of edges and fill
+</span>    <span class="keyword">local</span> image = love.graphics.newImage(<span class="string">"sexy-button.png"</span>)
+    <span class="keyword">local</span> imw, imh = image:getDimensions()
+
+    <span class="comment">-- define the quads that make up the button parts
+</span>    <span class="keyword">local</span> leftQuad = love.graphics.newQuad(<span class="number">0</span>, <span class="number">0</span>, <span class="number">15</span>, <span class="number">32</span>, imw, imh)
+    <span class="keyword">local</span> rightQuad = love.graphics.newQuad(<span class="number">18</span>, <span class="number">0</span>, <span class="number">15</span>, <span class="number">32</span>, imw, imh)
+    <span class="keyword">local</span> fillQuad = love.graphics.newQuad(<span class="number">16</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">32</span>, imw, imh)
+
+    sexybutton = button:new{
+        left = <span class="number">100</span>,
+        top = <span class="number">100</span>,
+        text = <span class="string">"hello, sexy!"</span>,
+
+        callback = <span class="keyword">function</span>(btn)
+            <span class="global">print</span>(<span class="string">"clicked "</span>..<span class="global">os</span>.date(<span class="string">"%c"</span>, <span class="global">os</span>.time()))
+            <span class="keyword">end</span>,
+
+        draw = <span class="keyword">function</span>(btn)
+
+            <span class="comment">-- this is a very unoptimized but functional demonstration.
+</span>            <span class="comment">-- a better way is to pre-render this to canvas.
+</span>            <span class="comment">-- it is worth noting the round corners are draw outside
+</span>            <span class="comment">-- the button's bounds.
+</span>
+            <span class="comment">-- save graphics state
+</span>            love.graphics.push()
+
+            <span class="comment">-- position the button
+</span>            love.graphics.translate(btn.left, btn.top)
+
+            <span class="comment">-- push up/down on focus/click
+</span>            <span class="keyword">if</span> btn.down <span class="keyword">then</span>
+                love.graphics.translate(<span class="number">0</span>, <span class="number">1</span>)
+                love.graphics.setColor(<span class="number">255</span>, <span class="number">200</span>, <span class="number">255</span>)
+            <span class="keyword">elseif</span> btn.focused <span class="keyword">then</span>
+                love.graphics.setColor(<span class="number">200</span>, <span class="number">255</span>, <span class="number">200</span>)
+            <span class="keyword">else</span>
+                love.graphics.setColor(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>)
+            <span class="keyword">end</span>
+
+            <span class="comment">-- draw left corner (left of bounds)
+</span>            love.graphics.draw(image, leftQuad, -<span class="number">15</span>, <span class="number">0</span>)
+
+            <span class="comment">-- draw fill
+</span>            <span class="keyword">for</span> n=<span class="number">0</span>, btn.width <span class="keyword">do</span>
+                love.graphics.draw(image, fillQuad, n, <span class="number">0</span>)
+            <span class="keyword">end</span>
+
+            <span class="comment">-- draw right corner (right of bounds)
+</span>            love.graphics.draw(image, rightQuad, btn.width, <span class="number">0</span>)
+
+            <span class="comment">-- print text
+</span>            love.graphics.<span class="global">print</span>(btn.text)
+
+            <span class="comment">-- restore graphics state
+</span>            love.graphics.pop()
+            <span class="keyword">end</span>
+    }
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.mousepressed(x, y, button, istouch)
+
+    sexybutton:mousepressed(x, y, button, istouch)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.mousereleased(x, y, button, istouch)
+
+    sexybutton:mousereleased(x, y, button, istouch)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.mousemoved(x, y, dx, dy, istouch)
+
+    sexybutton:mousemoved(x, y, dx, dy, istouch)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.update(dt)
+
+    sexybutton:update(dt)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.draw()
+
+    sexybutton:draw()
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> love.keypressed(key)
+  <span class="keyword">if</span> key == <span class="string">"escape"</span> <span class="keyword">then</span>
+    love.event.quit()
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-12-29 22:34:27 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -42,8 +42,8 @@
   <li><a href="../modules/aperture.html">aperture</a></li>
   <li><a href="../modules/camera.html">camera</a></li>
   <li><a href="../modules/digitroller.html">digitroller</a></li>
-  <li><strong>hotspot</strong></li>
-  <li><a href="../modules/button.html">button</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+  <li><strong>button</strong></li>
   <li><a href="../modules/trig.html">trig</a></li>
 </ul>
 <h2>Examples</h2>
@@ -63,9 +63,13 @@
 
 <div id="content">
 
-<h1>Module <code>hotspot</code></h1>
-<p>Provides a hotspot with focus tracking.</p>
-<p></p>
+<h1>Module <code>button</code></h1>
+<p>Provides a clickable button.</p>
+<p>
+ This acts similar to a <a href="../modules/hotspot.html#">hotspot</a>, with the exception you don't
+ specify the size, which is automatically measured from the button text.
+ It provides high flexibility as shown in <a href="../examples/switch-example.lua.html#">switch-example.lua</a>
+</p>
     <h3>Info:</h3>
     <ul>
         <li><strong>License</strong>: GPL v3</li>
@@ -80,35 +84,35 @@
 	<td class="summary">Creates a new instance.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#update">update (dt)</a></td>
-	<td class="summary">Placeholder function.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#mousemoved">mousemoved (x, y, dx, dy, istouch)</a></td>
-	<td class="summary">Process mouse/touch movement.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#mousepressed">mousepressed (x, y, button, istouch)</a></td>
-	<td class="summary">Process pressed clicks/touches.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#mousereleased">mousereleased (x, y, button, istouch)</a></td>
-	<td class="summary">Process click/touch releases.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#testFocus">testFocus (x, y)</a></td>
+	<td class="name" nowrap><a href="#module_mt:testFocus">module_mt:testFocus (x, y)</a></td>
 	<td class="summary">Tests if a point is over the element.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#draw">draw ()</a></td>
+	<td class="name" nowrap><a href="#module_mt:draw">module_mt:draw ()</a></td>
 	<td class="summary">Placeholder function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module_mt:update">module_mt:update (dt)</a></td>
+	<td class="summary">Placeholder function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module_mt:mousemoved">module_mt:mousemoved (x, y, dx, dy, istouch)</a></td>
+	<td class="summary">Process mouse/touch movement.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module_mt:mousepressed">module_mt:mousepressed (x, y, button, istouch)</a></td>
+	<td class="summary">Process pressed clicks/touches.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module_mt:mousereleased">module_mt:mousereleased (x, y, button, istouch)</a></td>
+	<td class="summary">Process click/touch releases.</td>
 	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#args">args</a></td>
-	<td class="summary">A table of arguments for new hotspots.</td>
+	<td class="summary">A table of arguments for new instances.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#instance">instance</a></td>
@@ -134,7 +138,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">args</span>
-            <span class="types"><a class="type" href="../modules/hotspot.html#args">args</a></span>
+            <span class="types"><a class="type" href="../modules/button.html#args">args</a></span>
 
  A table of arguments.
 
@@ -144,7 +148,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/hotspot.html#instance">instance</a></span>
+           <span class="types"><a class="type" href="../modules/button.html#instance">instance</a></span>
 
     </ol>
 
@@ -153,8 +157,60 @@
 
 </dd>
     <dt>
-    <a name = "update"></a>
-    <strong>update (dt)</strong>
+    <a name = "module_mt:testFocus"></a>
+    <strong>module_mt:testFocus (x, y)</strong>
+    </dt>
+    <dd>
+    Tests if a point is over the element.
+ Used internally by <a href="../modules/button.html#module_mt:mousemoved">mousemoved</a>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The x position to test against
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The y position to test against
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if the point is over the element
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module_mt:draw"></a>
+    <strong>module_mt:draw ()</strong>
+    </dt>
+    <dd>
+    Placeholder function.
+ This element does not draw anything, this is user controlled
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module_mt:update"></a>
+    <strong>module_mt:update (dt)</strong>
     </dt>
     <dd>
     Placeholder function.
@@ -177,8 +233,8 @@
 
 </dd>
     <dt>
-    <a name = "mousemoved"></a>
-    <strong>mousemoved (x, y, dx, dy, istouch)</strong>
+    <a name = "module_mt:mousemoved"></a>
+    <strong>module_mt:mousemoved (x, y, dx, dy, istouch)</strong>
     </dt>
     <dd>
     Process mouse/touch movement.
@@ -211,8 +267,8 @@
 
 </dd>
     <dt>
-    <a name = "mousepressed"></a>
-    <strong>mousepressed (x, y, button, istouch)</strong>
+    <a name = "module_mt:mousepressed"></a>
+    <strong>module_mt:mousepressed (x, y, button, istouch)</strong>
     </dt>
     <dd>
     Process pressed clicks/touches.
@@ -242,8 +298,8 @@
 
 </dd>
     <dt>
-    <a name = "mousereleased"></a>
-    <strong>mousereleased (x, y, button, istouch)</strong>
+    <a name = "module_mt:mousereleased"></a>
+    <strong>module_mt:mousereleased (x, y, button, istouch)</strong>
     </dt>
     <dd>
     Process click/touch releases.
@@ -273,58 +329,6 @@
 
 
 </dd>
-    <dt>
-    <a name = "testFocus"></a>
-    <strong>testFocus (x, y)</strong>
-    </dt>
-    <dd>
-    Tests if a point is over the element.
- Used internally by <a href="../modules/hotspot.html#mousemoved">mousemoved</a>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><span class="type">number</span></span>
-
- The x position to test against
-
-        </li>
-        <li><span class="parameter">y</span>
-            <span class="types"><span class="type">number</span></span>
-
- The y position to test against
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-        true if the point is over the element
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "draw"></a>
-    <strong>draw ()</strong>
-    </dt>
-    <dd>
-    Placeholder function.
- This element does not draw anything, this is user controlled
-
-
-
-
-
-
-
-</dd>
 </dl>
     <h2 class="section-header "><a name="Tables"></a>Tables</h2>
 
@@ -334,9 +338,9 @@
     <strong>args</strong>
     </dt>
     <dd>
-    A table of arguments for new hotspots.
+    A table of arguments for new instances.
  In addition to the mentioned parameters, you can add any other keys
- you want. All keys are copied to the hotspot instance, which allows
+ you want. All keys are copied to the instance, which allows
  you to access them later through the instance.
 
 
@@ -355,16 +359,18 @@
  The top screen position.
 
         </li>
-        <li><span class="parameter">width</span>
-            <span class="types"><span class="type">number</span></span>
+        <li><span class="parameter">callback</span>
+            <span class="types"><span class="type">function</span></span>
 
- The width in pixels.
+ The function fired when this control has focus and click/touch
+ is released on it.
 
         </li>
-        <li><span class="parameter">height</span>
-            <span class="types"><span class="type">number</span></span>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
 
- The height in pixels.
+ The text of the button. This is measured (with the current font)
+ to determine the element size.
         </li>
     </ul>
 
@@ -386,15 +392,15 @@
         <li><span class="parameter">focused</span>
             <span class="types"><span class="type">bool</span></span>
 
- true while the focus is over the hotspot. This is determined
- while you call <a href="../modules/hotspot.html#mousemoved">mousemoved</a>
+ true while the focus is over the button. This is determined
+ while you call <a href="../modules/button.html#module_mt:mousemoved">mousemoved</a>
 
         </li>
         <li><span class="parameter">down</span>
             <span class="types"><span class="type">bool</span></span>
 
- true while a click/touch is pressed on the hotspot. This is determined
- while you call <a href="../modules/hotspot.html#mousepressed">mousepressed</a>
+ true while a click/touch is pressed on the button. This is determined
+ while you call <a href="../modules/button.html#module_mt:mousepressed">mousepressed</a>
 
         </li>
         <li><span class="parameter">left</span>
@@ -412,13 +418,20 @@
         <li><span class="parameter">width</span>
             <span class="types"><span class="type">number</span></span>
 
- The width of the element
+ The width of the element as calculated from the measured text
 
         </li>
         <li><span class="parameter">height</span>
             <span class="types"><span class="type">number</span></span>
 
- The height of the element
+ The height of the element as calculated from the measured text
+
+        </li>
+        <li><span class="parameter">callback</span>
+            <span class="types"><span class="type">function</span></span>
+
+ The function fired when this control has focus and click/touch
+ is released on it.
         </li>
     </ul>
 
