@@ -59,30 +59,88 @@ local hotspot = {}
 -- A new hotspot instance
 function module:new(args)
 
-  if not args.top or not args.left or not args.width or not args.height then
-    error("Hotspot must have a top, left, width and height")
-  end
+    if not args.top or not args.left or not args.width or not args.height then
+        error("Hotspot must have a top, left, width and height")
+    end
 
-  local instance = {}
+    local instance = {}
 
-  -- copy arguments to the instance
-  for k, v in pairs(args) do
-    instance[k] = v
-  end
+    -- copy arguments to the instance
+    for k, v in pairs(args) do
+        -- ensure callback is always a function
+        if k == "callback" then
+            if type(v) == "function" then
+                instance[k] = v
+            end
+        else
+            instance[k] = v
+        end
+    end
 
-  -- apply instance functions
-  setmetatable(instance, { __index = hotspot })
+    -- apply instance functions
+    setmetatable(instance, { __index = hotspot })
 
-  return instance
+    return instance
+
+end
+
+--- Placeholder function.
+-- Hotspots do not process any updates.
+--
+-- @tparam number dt
+-- Time delta as given by the Love callback
+function hotspot:update(dt)
 
 end
 
 --- Process mouse movement.
--- Call this from your game loop to let the aperture determine if
--- it is in focus via the "touched" property.
 function hotspot:mousemoved(x, y, dx, dy, istouch)
-  self.touched = x > self.left and x < self.left + self.width
-    and y > self.top and y < self.top + self.height
+
+    self.focused = self:testFocus(x, y)
+
+end
+
+--- Process mouse presses.
+function hotspot:mousepressed(x, y, button, istouch)
+
+    self.down = self.focused
+
+end
+
+--- Process mouse releases.
+-- This is the function that triggers the callback function on the control.
+function hotspot:mousereleased(x, y, button, istouch)
+
+    self.down = false
+
+    if self.focused and self.callback then
+        self.callback(self)
+    end
+
+end
+
+--- Tests if a point is over the control.
+-- Used internally by @{mousepressed}
+--
+-- @tparam number x
+-- The x point
+--
+-- @tparam number y
+-- The y point
+--
+-- @treturn bool
+-- True if the point is over the control.
+function hotspot:testFocus(x, y)
+
+    return x > self.left and x < self.left + self.width
+        and y > self.top and y < self.top + self.height
+
+end
+
+--- Placeholder function.
+-- Hotspots do not draw anything, this is user controlled.
+function hotspot:draw()
+
 end
 
 return module
