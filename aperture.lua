@@ -69,7 +69,7 @@ local aperture = {}
 --- Lists properties available on the aperture instance.
 -- @table instance
 --
--- @tfield bool touched
+-- @tfield bool focused
 -- true while the cursor is over the aperture. This is determined automatically
 -- while you call @{mousemoved}
 --
@@ -87,12 +87,7 @@ local aperture = {}
 -- A new aperture instance
 function module:new(args)
 
-  -- inherit from the hotspot
-  local hotspot_module = require(thispath.."hotspot")
-  local instance = hotspot_module:new(args)
-
-  -- save the hotspot mousemoved function so we can overwrite it
-  instance.mousemoved_base = instance.mousemoved
+  local instance = { }
 
   -- copy arguments to the instance
   for k, v in pairs(args) do
@@ -121,9 +116,8 @@ function module:new(args)
 
 end
 
---- Inserts a hotspot into the aperture.
--- This gives automatic clicking on inserted hotspots
--- via the @{mousepressed} function.
+--- Inserts a control into the aperture.
+-- This can be a hotspot, button or switch.
 --
 -- @tparam hotspot hotspot
 -- The @{hotspot} to insert.
@@ -190,7 +184,7 @@ end
 
 --- Scroll the aperture one page up.
 function aperture:scrollUp()
-  if self.complete and self.touched then
+  if self.complete and self.focused then
     self.complete = false
     self.page = math.max(1, self.page - self.factor)
     self:applytween()
@@ -199,7 +193,7 @@ end
 
 --- Scroll the aperture one page down.
 function aperture:scrollDown()
-  if self.complete and self.touched then
+  if self.complete and self.focused then
     self.complete = false
     self.page = math.min(self.pages, self.page + self.factor)
     self:applytween()
@@ -243,10 +237,10 @@ end
 
 --- Process mouse movement.
 -- Call this from your game loop to let the aperture determine if
--- it is in focus via the "touched" property.
+-- it is in focus via the "focused" property.
 function aperture:mousemoved(x, y, dx, dy, istouch)
 
-  self:mousemoved_base(x, y, dx, dy, istouch)
+  self.focused = self:testFocus(x, y)
 
   -- touch any children hotspots with local coordinates
   x, y = self:pointFromScreen(x, y)
@@ -257,21 +251,35 @@ function aperture:mousemoved(x, y, dx, dy, istouch)
 
 end
 
---- Process clicks inside the aperture.
--- If the hotspot has a "action" key function it will be called.
+--- Process mouse presses inside the aperture.
 --
 -- @see aperture:insert
 function aperture:mousepressed(x, y, button, istouch)
 
+  self.down = self.focused
+
   -- ignore clicks if this aperture is not active
-  if not self.touched then return end
+  if not self.focused then return end
 
   for _, hotspot in ipairs(self.hotspots) do
-    if hotspot.touched then
-      if type(hotspot.action) == "function" then
-        hotspot:action()
-      end
-    end
+    hotspot:mousepressed(x, y, button, istouch)
+  end
+
+end
+
+--- Process mouse releases inside the aperture.
+-- This is the function that triggers any callbacks on children controls.
+--
+-- @see aperture:insert
+function aperture:mousereleased(x, y, button, istouch)
+
+  self.down = false
+
+  -- ignore clicks if this aperture is not active
+  if not self.focused then return end
+
+  for _, hotspot in ipairs(self.hotspots) do
+    hotspot:mousereleased(x, y, button, istouch)
   end
 
 end
@@ -293,6 +301,13 @@ function aperture:applytween()
   end
 
   self.tween = tween.new(self.duration, self, { xoffset=xo, yoffset=yo }, self.easing)
+
+end
+
+function aperture:testFocus(x, y)
+
+    return x > self.left and x < self.left + self.width
+        and y > self.top and y < self.top + self.height
 
 end
 
