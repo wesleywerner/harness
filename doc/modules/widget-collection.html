@@ -1,0 +1,480 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Local_Functions">Local Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+  <li><a href="../modules/button.html">button</a></li>
+  <li><a href="../modules/trig.html">trig</a></li>
+  <li><strong>widget-collection</strong></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/button-example.lua.html">button-example.lua</a></li>
+  <li><a href="../examples/camera-example.lua.html">camera-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+  <li><a href="../examples/sexy-button-example.lua.html">sexy-button-example.lua</a></li>
+  <li><a href="../examples/switch-example.lua.html">switch-example.lua</a></li>
+  <li><a href="../examples/trig-example.lua.html">trig-example.lua</a></li>
+  <li><a href="../examples/widget-collection-example.lua.html">widget-collection-example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>widget-collection</code></h1>
+<p>Provides collective management of buttons.</p>
+<p>
+ The collection handles batch event updating and focus tracking.
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>License</strong>: GPL v3</li>
+        <li><strong>Author</strong>: Wesley Werner</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#module:clear">module:clear ()</a></td>
+	<td class="summary">Clears the collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:button">module:button (key, parameters)</a></td>
+	<td class="summary">Add a button to the collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:get">module:get (key)</a></td>
+	<td class="summary">Get the element in the collection that matches a key.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:keypressed">module:keypressed (key)</a></td>
+	<td class="summary">Process key presses to allow navigation with the TAB key
+ and selection with the RETURN key.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:mousemoved">module:mousemoved (x, y, dx, dy, istouch)</a></td>
+	<td class="summary">Process click/touch movement on all elements in the collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:mousepressed">module:mousepressed (x, y, button, istouch)</a></td>
+	<td class="summary">Process click/touch presses on all elements in the collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:mousereleased">module:mousereleased (x, y, button, istouch)</a></td>
+	<td class="summary">Process click/touch releases on all elements in the collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:update">module:update (dt)</a></td>
+	<td class="summary">Process updates on all elements in the collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#module:draw">module:draw ()</a></td>
+	<td class="summary">Process drawing on all elements in the collection.</td>
+	</tr>
+</table>
+<h2><a href="#Local_Functions">Local Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#mapkeys">mapkeys ()</a></td>
+	<td class="summary">Creates an ordered list of keys mapped to positions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#focusFirst">focusFirst ()</a></td>
+	<td class="summary">Moves focus to the first element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#focusNext">focusNext ()</a></td>
+	<td class="summary">Moves focus to the next element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#focusPrev">focusPrev ()</a></td>
+	<td class="summary">Moves focus to the previous element.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#focusByKey">focusByKey (key)</a></td>
+	<td class="summary">Moves focus to the element with a given key.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "module:clear"></a>
+    <strong>module:clear ()</strong>
+    </dt>
+    <dd>
+    Clears the collection.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:button"></a>
+    <strong>module:button (key, parameters)</strong>
+    </dt>
+    <dd>
+    Add a button to the collection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The key of the button to add to the collection.
+
+        </li>
+        <li><span class="parameter">parameters</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
+ The button parameters to pass to the button constructor.
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/button.html#instance">button.instance</a></span>
+
+ The created button element.
+
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/widget-collection.html#module:get">get</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "module:get"></a>
+    <strong>module:get (key)</strong>
+    </dt>
+    <dd>
+    Get the element in the collection that matches a key.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The key of the element to find.
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/button.html#instance">button.instance</a></span>
+        The element instance.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:keypressed"></a>
+    <strong>module:keypressed (key)</strong>
+    </dt>
+    <dd>
+    Process key presses to allow navigation with the TAB key
+ and selection with the RETURN key.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:mousemoved"></a>
+    <strong>module:mousemoved (x, y, dx, dy, istouch)</strong>
+    </dt>
+    <dd>
+    Process click/touch movement on all elements in the collection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+        </li>
+        <li><span class="parameter">y</span>
+
+        </li>
+        <li><span class="parameter">dx</span>
+
+        </li>
+        <li><span class="parameter">dy</span>
+
+        </li>
+        <li><span class="parameter">istouch</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:mousepressed"></a>
+    <strong>module:mousepressed (x, y, button, istouch)</strong>
+    </dt>
+    <dd>
+    Process click/touch presses on all elements in the collection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+        </li>
+        <li><span class="parameter">y</span>
+
+        </li>
+        <li><span class="parameter">button</span>
+
+        </li>
+        <li><span class="parameter">istouch</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:mousereleased"></a>
+    <strong>module:mousereleased (x, y, button, istouch)</strong>
+    </dt>
+    <dd>
+    Process click/touch releases on all elements in the collection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+        </li>
+        <li><span class="parameter">y</span>
+
+        </li>
+        <li><span class="parameter">button</span>
+
+        </li>
+        <li><span class="parameter">istouch</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:update"></a>
+    <strong>module:update (dt)</strong>
+    </dt>
+    <dd>
+    Process updates on all elements in the collection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
+
+ delta time as given by Love
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "module:draw"></a>
+    <strong>module:draw ()</strong>
+    </dt>
+    <dd>
+    Process drawing on all elements in the collection.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "mapkeys"></a>
+    <strong>mapkeys ()</strong>
+    </dt>
+    <dd>
+    Creates an ordered list of keys mapped to positions.
+ This function is used internally by the collection.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "focusFirst"></a>
+    <strong>focusFirst ()</strong>
+    </dt>
+    <dd>
+    Moves focus to the first element.
+ This function is used internally by the collection.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "focusNext"></a>
+    <strong>focusNext ()</strong>
+    </dt>
+    <dd>
+    Moves focus to the next element.
+ This function is used internally by the collection.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "focusPrev"></a>
+    <strong>focusPrev ()</strong>
+    </dt>
+    <dd>
+    Moves focus to the previous element.
+ This function is used internally by the collection.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "focusByKey"></a>
+    <strong>focusByKey (key)</strong>
+    </dt>
+    <dd>
+    Moves focus to the element with a given key.
+ This function is used internally by the collection.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-12-30 08:53:09 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

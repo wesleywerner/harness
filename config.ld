@@ -4,7 +4,8 @@ file = {
   "digitroller.lua",
   "hotspot.lua",
   "button.lua",
-  "trig.lua"
+  "trig.lua",
+  "widget-collection.lua"
 }
 examples = {
   "examples",
