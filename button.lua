@@ -168,11 +168,11 @@ end
 -- and fires the "callback" function if it is present.
 function module_mt:mousereleased(x, y, button, istouch)
 
-    self.down = false
-
-    if self.focused and self.callback then
+    if self.down and self.focused and self.callback then
         self.callback(self)
     end
+
+    self.down = false
 
 end
 
