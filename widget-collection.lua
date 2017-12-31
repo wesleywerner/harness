@@ -154,9 +154,8 @@ function module:keypressed(key)
         end
     elseif key == "return" or key == "kpenter" then
         local control = self.controls[self.keymap[self.focusedKey].key]
-        if type(control.callback) == "function" then
-            control.callback(control)
-        end
+        control.down = true
+        control.downdt = .1
     end
 
 end
@@ -199,7 +198,24 @@ end
 function module:update(dt)
 
     for key, control in pairs(self.controls) do
+
+        -- update control state
         control:update(dt)
+
+        -- reduce down timeout
+        if control.downdt then
+           control.downdt = control.downdt - dt
+           -- release down state when timer expires
+           if control.downdt < 0 then
+                control.downdt = nil
+                control.down = false
+                -- fire the callback
+                if type(control.callback) == "function" then
+                    control.callback(control)
+                end
+           end
+        end
+
     end
 
 end
