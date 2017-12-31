@@ -21,10 +21,10 @@
 --
 -- @author Wesley Werner
 -- @license GPL v3
--- @module widget-collection
+-- @module widgetcollection
 
 local module = { }
-local collection_mt = { }
+local widgetcollection = { }
 local thispath = select('1', ...):match(".+%.") or ""
 local buttonModule = require(thispath.."button")
 
@@ -33,13 +33,16 @@ local buttonModule = require(thispath.."button")
 function module:new()
 
     local instance = { controls={} }
-    setmetatable(instance, { __index = collection_mt })
+    setmetatable(instance, { __index = widgetcollection })
     return instance
 
 end
 
 --- Creates an ordered list of keys mapped to positions.
 -- This function is used internally by the collection.
+--
+-- @tparam table instance
+-- The widget collection instance to work on.
 local function mapkeys(instance)
 
     -- map control keys to position for sorting
@@ -57,6 +60,9 @@ end
 
 --- Moves focus to the first element.
 -- This function is used internally by the collection.
+--
+-- @tparam table instance
+-- The widget collection instance to work on.
 local function focusFirst(instance)
 
     instance.focusedKey = 1
@@ -65,6 +71,9 @@ end
 
 --- Moves focus to the next element.
 -- This function is used internally by the collection.
+--
+-- @tparam table instance
+-- The widget collection instance to work on.
 local function focusNext(instance)
 
     instance.focusedKey = instance.focusedKey + 1
@@ -81,6 +90,9 @@ end
 
 --- Moves focus to the previous element.
 -- This function is used internally by the collection.
+--
+-- @tparam table instance
+-- The widget collection instance to work on.
 local function focusPrev(instance)
 
     instance.focusedKey = instance.focusedKey - 1
@@ -98,7 +110,11 @@ end
 --- Moves focus to the element with a given key.
 -- This function is used internally by the collection.
 --
+-- @tparam table instance
+-- The widget collection instance to work on.
+--
 -- @tparam string key
+-- The key of the widget to get
 local function focusByKey(instance, key)
 
     for i, map in ipairs(instance.keymap) do
@@ -121,7 +137,7 @@ end
 -- The created button element.
 --
 -- @see get
-function collection_mt:button(key, parameters)
+function widgetcollection:button(key, parameters)
 
     self.controls[key] = buttonModule:new(parameters)
     mapkeys(self)
@@ -138,7 +154,7 @@ end
 --
 -- @treturn button.instance
 -- The element instance.
-function collection_mt:get(key)
+function widgetcollection:get(key)
 
     return self.controls[key]
 
@@ -146,7 +162,7 @@ end
 
 --- Process key presses to allow navigation with the TAB key
 -- and selection with the RETURN key.
-function collection_mt:keypressed(key)
+function widgetcollection:keypressed(key)
 
     if key == "tab" then
         local shift = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
@@ -164,7 +180,7 @@ function collection_mt:keypressed(key)
 end
 
 --- Process click/touch movement on all elements in the collection.
-function collection_mt:mousemoved(x, y, dx, dy, istouch)
+function widgetcollection:mousemoved(x, y, dx, dy, istouch)
 
     for key, control in pairs(self.controls) do
         control:mousemoved(x, y, dx, dy, istouch)
@@ -173,7 +189,7 @@ function collection_mt:mousemoved(x, y, dx, dy, istouch)
 end
 
 --- Process click/touch presses on all elements in the collection.
-function collection_mt:mousepressed(x, y, button, istouch)
+function widgetcollection:mousepressed(x, y, button, istouch)
 
     for key, control in pairs(self.controls) do
         control:mousepressed(x, y, button, istouch)
@@ -182,7 +198,7 @@ function collection_mt:mousepressed(x, y, button, istouch)
 end
 
 --- Process click/touch releases on all elements in the collection.
-function collection_mt:mousereleased(x, y, button, istouch)
+function widgetcollection:mousereleased(x, y, button, istouch)
 
     for key, control in pairs(self.controls) do
         control:mousereleased(x, y, button, istouch)
@@ -198,7 +214,7 @@ end
 --
 -- @tparam number dt
 -- delta time as given by Love
-function collection_mt:update(dt)
+function widgetcollection:update(dt)
 
     for key, control in pairs(self.controls) do
 
@@ -224,7 +240,7 @@ function collection_mt:update(dt)
 end
 
 --- Process drawing on all elements in the collection.
-function collection_mt:draw()
+function widgetcollection:draw()
 
     -- save state
     love.graphics.push()

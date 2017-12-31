@@ -25,7 +25,7 @@ function love.load()
     love.graphics.setFont(love.graphics.newFont(24))
 
     -- load the widget collection
-    local collectionModule = require("harness.widget-collection")
+    local collectionModule = require("harness.widgetcollection")
 
     -- get a new collection instance
     coll = collectionModule:new()
