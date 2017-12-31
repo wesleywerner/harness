@@ -60,7 +60,7 @@ Provides a clickable button similar to a hotspot, with the exception you don't s
 
 [Documentation](doc/modules/button.html)
 
-Also see [widget collection documentation](doc/modules/widget-collection.html)
+Also see [widget collection documentation](doc/modules/widgetcollection.html)
 
 ![button screenshot](figures/figure3.png)
 
