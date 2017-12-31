@@ -23,30 +23,33 @@
 -- @license GPL v3
 -- @module widget-collection
 
-local module = { controls={} }
+local module = { }
+local collection_mt = { }
 local thispath = select('1', ...):match(".+%.") or ""
 local buttonModule = require(thispath.."button")
 
---- Clears the collection.
-function module:clear()
+--- Returns a new widget collection instance.
+--
+function module:new()
 
-    self.controls = { }
-    self.focusedKey = nil
+    local instance = { controls={} }
+    setmetatable(instance, { __index = collection_mt })
+    return instance
 
 end
 
 --- Creates an ordered list of keys mapped to positions.
 -- This function is used internally by the collection.
-local function mapkeys()
+local function mapkeys(instance)
 
     -- map control keys to position for sorting
-    module.keymap = { }
-    for key, v in pairs(module.controls) do
-        table.insert(module.keymap, {key=key, left=v.left, top=v.top})
+    instance.keymap = { }
+    for key, v in pairs(instance.controls) do
+        table.insert(instance.keymap, {key=key, left=v.left, top=v.top})
     end
 
     -- order top first, then left second
-    table.sort(module.keymap, function(a, b)
+    table.sort(instance.keymap, function(a, b)
         return (a.top == b.top) and (a.left < b.left) or (a.top < b.top)
         end)
 
@@ -54,40 +57,40 @@ end
 
 --- Moves focus to the first element.
 -- This function is used internally by the collection.
-local function focusFirst()
+local function focusFirst(instance)
 
-    module.focusedKey = 1
+    instance.focusedKey = 1
 
 end
 
 --- Moves focus to the next element.
 -- This function is used internally by the collection.
-local function focusNext()
+local function focusNext(instance)
 
-    module.focusedKey = module.focusedKey + 1
-    if module.focusedKey > #module.keymap then
-        module.focusedKey = 1
+    instance.focusedKey = instance.focusedKey + 1
+    if instance.focusedKey > #instance.keymap then
+        instance.focusedKey = 1
     end
 
     -- apply focus
-    for key, control in pairs(module.controls) do
-        control.focused = (key == module.keymap[module.focusedKey].key)
+    for key, control in pairs(instance.controls) do
+        control.focused = (key == instance.keymap[instance.focusedKey].key)
     end
 
 end
 
 --- Moves focus to the previous element.
 -- This function is used internally by the collection.
-local function focusPrev()
+local function focusPrev(instance)
 
-    module.focusedKey = module.focusedKey - 1
-    if module.focusedKey < 1 then
-        module.focusedKey = #module.keymap
+    instance.focusedKey = instance.focusedKey - 1
+    if instance.focusedKey < 1 then
+        instance.focusedKey = #instance.keymap
     end
 
     -- apply focus
-    for key, control in pairs(module.controls) do
-        control.focused = (key == module.keymap[module.focusedKey].key)
+    for key, control in pairs(instance.controls) do
+        control.focused = (key == instance.keymap[instance.focusedKey].key)
     end
 
 end
@@ -96,11 +99,11 @@ end
 -- This function is used internally by the collection.
 --
 -- @tparam string key
-local function focusByKey(key)
+local function focusByKey(instance, key)
 
-    for i, map in ipairs(module.keymap) do
+    for i, map in ipairs(instance.keymap) do
         if map.key == key then
-            module.focusedKey = i
+            instance.focusedKey = i
         end
     end
 
@@ -118,11 +121,11 @@ end
 -- The created button element.
 --
 -- @see get
-function module:button(key, parameters)
+function collection_mt:button(key, parameters)
 
     self.controls[key] = buttonModule:new(parameters)
-    mapkeys()
-    focusFirst()
+    mapkeys(self)
+    focusFirst(self)
     return self.controls[key]
 
 end
@@ -135,7 +138,7 @@ end
 --
 -- @treturn button.instance
 -- The element instance.
-function module:get(key)
+function collection_mt:get(key)
 
     return self.controls[key]
 
@@ -143,14 +146,14 @@ end
 
 --- Process key presses to allow navigation with the TAB key
 -- and selection with the RETURN key.
-function module:keypressed(key)
+function collection_mt:keypressed(key)
 
     if key == "tab" then
         local shift = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
         if shift then
-            focusPrev()
+            focusPrev(self)
         else
-            focusNext()
+            focusNext(self)
         end
     elseif key == "return" or key == "kpenter" then
         local control = self.controls[self.keymap[self.focusedKey].key]
@@ -161,7 +164,7 @@ function module:keypressed(key)
 end
 
 --- Process click/touch movement on all elements in the collection.
-function module:mousemoved(x, y, dx, dy, istouch)
+function collection_mt:mousemoved(x, y, dx, dy, istouch)
 
     for key, control in pairs(self.controls) do
         control:mousemoved(x, y, dx, dy, istouch)
@@ -170,7 +173,7 @@ function module:mousemoved(x, y, dx, dy, istouch)
 end
 
 --- Process click/touch presses on all elements in the collection.
-function module:mousepressed(x, y, button, istouch)
+function collection_mt:mousepressed(x, y, button, istouch)
 
     for key, control in pairs(self.controls) do
         control:mousepressed(x, y, button, istouch)
@@ -179,13 +182,13 @@ function module:mousepressed(x, y, button, istouch)
 end
 
 --- Process click/touch releases on all elements in the collection.
-function module:mousereleased(x, y, button, istouch)
+function collection_mt:mousereleased(x, y, button, istouch)
 
     for key, control in pairs(self.controls) do
         control:mousereleased(x, y, button, istouch)
         -- move focus to touched control
         if control.focused then
-            focusByKey(key)
+            focusByKey(self, key)
         end
     end
 
@@ -195,7 +198,7 @@ end
 --
 -- @tparam number dt
 -- delta time as given by Love
-function module:update(dt)
+function collection_mt:update(dt)
 
     for key, control in pairs(self.controls) do
 
@@ -221,7 +224,7 @@ function module:update(dt)
 end
 
 --- Process drawing on all elements in the collection.
-function module:draw()
+function collection_mt:draw()
 
     -- save state
     love.graphics.push()

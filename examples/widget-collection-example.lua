@@ -16,13 +16,19 @@
 
 ]]--
 
+-- stores the widget collection
+local coll = nil
+
 function love.load()
 
     -- set button font
     love.graphics.setFont(love.graphics.newFont(24))
 
     -- load the widget collection
-    coll = require("harness.widget-collection")
+    local collectionModule = require("harness.widget-collection")
+
+    -- get a new collection instance
+    coll = collectionModule:new()
 
     -- define a reusable draw function
     local drawfunc = function(btn)
