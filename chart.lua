@@ -120,14 +120,13 @@ function chart:data(points, name)
         local newpoint = {
             a=p.a,
             b=p.b,
-            screenx=sx,
-            screeny=sy,
-            tweeny=self.height,
+            x=sx,
+            y=self.height,
             focus=false
         }
         table.insert(processed, newpoint)
 
-        newpoint.tween = tween.new(1, newpoint, { tweeny=sy }, "outCubic")
+        newpoint.tween = tween.new(1, newpoint, { y=sy }, "outCubic")
 
         print(string.format("point %d/%d == %d/%d", p.a, p.b, sx, sy))
 
@@ -167,8 +166,8 @@ function chart:mousemoved(x, y, dx, dy, istouch)
 
         for _, p in ipairs(data.points) do
 
-            local inX = x > (p.screenx - radius) and x < (p.screenx + radius)
-            local inY = y > (p.screeny - radius) and y < (p.screeny + radius)
+            local inX = x > (p.x - radius) and x < (p.x + radius)
+            local inY = y > (p.y - radius) and y < (p.y + radius)
 
             p.focus = inX and inY
 
@@ -224,8 +223,8 @@ function chart:draw()
         -- fill area
         local fillpoints = { 0, self.height }
         for _, p in ipairs(data.points) do
-            table.insert(fillpoints, p.screenx)
-            table.insert(fillpoints, p.tweeny)
+            table.insert(fillpoints, p.x)
+            table.insert(fillpoints, p.y)
         end
         table.insert(fillpoints, self.width)
         table.insert(fillpoints, self.height)
@@ -242,15 +241,15 @@ function chart:draw()
                     {
                         xvalue=data.points[n-1].a,
                         yvalue=data.points[n-1].b,
-                        x=data.points[n-1].screenx,
-                        y=data.points[n-1].tweeny,
+                        x=data.points[n-1].x,
+                        y=data.points[n-1].y,
                         focus=data.points[n-1].focus
                     },
                     {
                         xvalue=data.points[n].a,
                         yvalue=data.points[n].b,
-                        x=data.points[n].screenx,
-                        y=data.points[n].tweeny,
+                        x=data.points[n].x,
+                        y=data.points[n].y,
                         focus=data.points[n].focus
                     }
                 )
@@ -268,8 +267,8 @@ function chart:draw()
 
             if (focused) or (not point.focus) then
                 self.drawJoin(data.name,
-                    math.floor(point.screenx),
-                    math.floor(point.tweeny),
+                    math.floor(point.x),
+                    math.floor(point.y),
                     point.a,
                     point.b,
                     false
@@ -283,8 +282,8 @@ function chart:draw()
     end
     if focused then
         self.drawJoin(focused.name,
-            math.floor(focused.point.screenx),
-            math.floor(focused.point.tweeny),
+            math.floor(focused.point.x),
+            math.floor(focused.point.y),
             focused.point.a,
             focused.point.b,
             focused.point.focus
