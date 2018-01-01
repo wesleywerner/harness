@@ -26,11 +26,11 @@
 --- A table of data points that represent the chart.
 -- @table pointdefinition
 --
--- @tfield number x
--- The value on the horizontal x axiz.
+-- @tfield number a
+-- The value on the horizontal axiz.
 --
--- @tfield number y
--- The value on the vertical y axiz.
+-- @tfield number b
+-- The value on the vertical axiz.
 
 
 --- Defines a point in a line.
@@ -97,10 +97,10 @@ function chart:data(points, name)
 
     -- get the min and max values
     for _, p in ipairs(points) do
-        if p.x < xmin then xmin = p.x end
-        if p.y < ymin then ymin = p.y end
-        if p.x > xmax then xmax = p.x end
-        if p.y > ymax then ymax = p.y end
+        if p.a < xmin then xmin = p.a end
+        if p.b < ymin then ymin = p.b end
+        if p.a > xmax then xmax = p.a end
+        if p.b > ymax then ymax = p.b end
     end
 
     print(string.format("min/max = %d/%d", ymin, ymax))
@@ -114,12 +114,12 @@ function chart:data(points, name)
 
     for _, p in ipairs(points) do
 
-        local sx = self.scaleX * (p.x - xmin)
-        local sy = self.height - (self.scaleY * (p.y - ymin))
+        local sx = self.scaleX * (p.a - xmin)
+        local sy = self.height - (self.scaleY * (p.b - ymin))
 
         local newpoint = {
-            x=p.x,
-            y=p.y,
+            a=p.a,
+            b=p.b,
             screenx=sx,
             screeny=sy,
             tweeny=self.height,
@@ -129,7 +129,7 @@ function chart:data(points, name)
 
         newpoint.tween = tween.new(1, newpoint, { tweeny=sy }, "outCubic")
 
-        print(string.format("point %d/%d == %d/%d", p.x, p.y, sx, sy))
+        print(string.format("point %d/%d == %d/%d", p.a, p.b, sx, sy))
 
     end
 
@@ -240,15 +240,15 @@ function chart:draw()
             if n > 1 then
                 self.drawLine(data.name,
                     {
-                        xvalue=data.points[n-1].x,
-                        yvalue=data.points[n-1].y,
+                        xvalue=data.points[n-1].a,
+                        yvalue=data.points[n-1].b,
                         x=data.points[n-1].screenx,
                         y=data.points[n-1].tweeny,
                         focus=data.points[n-1].focus
                     },
                     {
-                        xvalue=data.points[n].x,
-                        yvalue=data.points[n].y,
+                        xvalue=data.points[n].a,
+                        yvalue=data.points[n].b,
                         x=data.points[n].screenx,
                         y=data.points[n].tweeny,
                         focus=data.points[n].focus
@@ -270,8 +270,8 @@ function chart:draw()
                 self.drawJoin(data.name,
                     math.floor(point.screenx),
                     math.floor(point.tweeny),
-                    point.x,
-                    point.y,
+                    point.a,
+                    point.b,
                     false
                 )
             else
@@ -285,8 +285,8 @@ function chart:draw()
         self.drawJoin(focused.name,
             math.floor(focused.point.screenx),
             math.floor(focused.point.tweeny),
-            focused.point.x,
-            focused.point.y,
+            focused.point.a,
+            focused.point.b,
             focused.point.focus
         )
     end
