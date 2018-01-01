@@ -22,6 +22,37 @@
 -- @license GPL v3
 -- @module chart
 
+
+--- A table of data points that represent the chart.
+-- @table pointdefinition
+--
+-- @tfield number x
+-- The value on the horizontal x axiz.
+--
+-- @tfield number y
+-- The value on the vertical y axiz.
+
+
+--- Defines a point in a line.
+--
+-- @table chartnode
+--
+-- @tfield number x
+-- The x position of the point.
+--
+-- @tfield number y
+-- The y position of the point.
+--
+-- @tfield number xvalue
+-- The x value of the point.
+--
+-- @tfield number yvalue
+-- The y value of the point.
+--
+-- @tfield bool focus
+-- If the point is under the mouse cursor.
+
+
 local chart = { }
 local thispath = select('1', ...):match(".+%.") or ""
 local tween = require(thispath.."tween")
@@ -45,12 +76,21 @@ color.blue      = {  38, 139, 210 }
 color.cyan      = {  42, 161, 152 }
 color.green     = { 133, 153,   0 }
 
+--- Clears all data points from the chart.
 function chart:clear()
 
     self.datapoints = { }
 
 end
 
+--- Add data points to the chart.
+-- Calling this multiple times adds new datasets to the chart.
+--
+-- @tparam pointdefinition points
+-- The list of points in the dataset.
+--
+-- @tparam string name
+-- The dataset name.
 function chart:data(points, name)
 
     local xmin, ymin, xmax, ymax = math.huge, math.huge, 0, 0
@@ -118,6 +158,7 @@ function chart:data(points, name)
 
 end
 
+--- Process mouse movement to allow focus on data points.
 function chart:mousemoved(x, y, dx, dy, istouch)
 
     local radius = 10
@@ -137,14 +178,18 @@ function chart:mousemoved(x, y, dx, dy, istouch)
 
 end
 
-function chart:mousepressed(x, y, button, istouch)
+--function chart:mousepressed(x, y, button, istouch)
 
-end
+--end
 
-function chart:mousereleased(x, y, button, istouch)
+--function chart:mousereleased(x, y, button, istouch)
 
-end
+--end
 
+--- Process chart animations.
+--
+-- @tparam number dt
+-- delta time as given by Love
 function chart:update(dt)
 
     for _, data in ipairs(self.datapoints) do
@@ -155,6 +200,15 @@ function chart:update(dt)
 
 end
 
+--- Draw the chart.
+-- This calls the chart drawing functions that you should overwrite.
+--
+-- @see drawBorder
+-- @see drawFill
+-- @see drawGrid
+-- @see drawJoin
+-- @see drawLabels
+-- @see drawLine
 function chart:draw()
 
     -- save state
@@ -242,94 +296,139 @@ function chart:draw()
 
 end
 
+--- Callback to draw the grid.
+-- You must overwrite this function to draw your own.
 function chart.drawGrid()
 
-    --love.graphics.setColor(color.base3)
+    love.graphics.setColor(color.base3)
 
-    --for x=0, self.width, 20 do
-        --love.graphics.line(x, 0, x, self.height)
-    --end
-    --for y=0, self.height, 20 do
-        --love.graphics.line(0, y, self.width, y)
-    --end
+    for x=0, self.width, 20 do
+        love.graphics.line(x, 0, x, self.height)
+    end
+    for y=0, self.height, 20 do
+        love.graphics.line(0, y, self.width, y)
+    end
 
 end
 
+--- Callback to draw the axiz label.s
+-- You must overwrite this function to draw your own.
+--
+-- @tparam labeldefinition labels
+-- A table of @{labeldefinition} items that you must draw.
 function chart.drawLabels(labels)
 
-    --love.graphics.setColor(color.green)
+    --- Defines label data for you to draw.
+    -- @table labeldefinition
+    --
+    -- @tfield string text
+    -- The label text.
+    --
+    -- @tfield number x
+    -- The x position of the label.
+    --
+    -- @tfield number y
+    -- The y position of the label.
 
-    --for _, label in ipairs(labels) do
+    love.graphics.setColor(color.green)
 
-        ---- draw label point
-        --love.graphics.circle("line", label.x, label.y, 3)
+    for _, label in ipairs(labels) do
 
-        ---- print label text
-        --if label.axiz == "x" then
-            --love.graphics.print(label.text, label.x, label.y + 12)
-        --else
-            --love.graphics.print(label.text, label.x - 24, label.y - 6)
-        --end
+        -- draw label point
+        love.graphics.circle("line", label.x, label.y, 3)
 
-    --end
+        -- print label text
+        if label.axiz == "x" then
+            love.graphics.print(label.text, label.x, label.y + 12)
+        else
+            love.graphics.print(label.text, label.x - 24, label.y - 6)
+        end
+
+    end
 
 end
 
+--- Callback to draw the border.
+-- You must overwrite this function to draw your own.
 function chart.drawBorder()
 
-    --love.graphics.setColor(color.base1)
-    --love.graphics.rectangle("line", 0, 0, self.width, self.height)
+    love.graphics.setColor(color.base1)
+    love.graphics.rectangle("line", 0, 0, self.width, self.height)
 
 end
 
+--- Callback to draw the lines.
+-- You must overwrite this function to draw your own.
+--
+-- @tparam string dataset
+-- The name of the dataset currently drawn.
+--
+-- @tparam chartnode point1
+-- The first point in the line segment to draw.
+--
+-- @tparam chartnode point2
+-- The second point in the line segment to draw.
 function chart.drawLine(dataset, point1, point2)
 
-    ---- line
-    --if dataset == "dataset 1" then
-        --love.graphics.setColor(color.magenta)
-    --else
-        --love.graphics.setColor(color.blue)
-    --end
+    -- line
+    if dataset == "dataset 1" then
+        love.graphics.setColor(color.magenta)
+    else
+        love.graphics.setColor(color.blue)
+    end
 
-    --love.graphics.setLineWidth(4)
-    --love.graphics.line(point1.x, point1.y, point2.x, point2.y)
-    --love.graphics.setLineWidth(1)
+    love.graphics.setLineWidth(4)
+    love.graphics.line(point1.x, point1.y, point2.x, point2.y)
+    love.graphics.setLineWidth(1)
 
 end
 
+--- Callback to draw the joins between lines.
+-- You must overwrite this function to draw your own.
+-- TODO: change to use chartnode parameters.
 function chart.drawJoin(dataset, x, y, value1, value2, focused)
 
-    --if dataset == "dataset 1" then
-        --love.graphics.setColor(color.magenta)
-    --else
-        --love.graphics.setColor(color.blue)
-    --end
+    if dataset == "dataset 1" then
+        love.graphics.setColor(color.magenta)
+    else
+        love.graphics.setColor(color.blue)
+    end
 
-    --if focused then
-        --love.graphics.setColor(color.white)
-        --love.graphics.circle("fill", x, y, 6)
-        ---- tooltip
-        --love.graphics.setColor(0, 0, 0)
-        --love.graphics.rectangle("fill", x + 20, y - 4, 80, 40)
-        --love.graphics.setColor(color.white)
-        --love.graphics.print(string.format("point: %d\nvalue: %d", value1, value2), x + 24, y)
-    --else
-        --love.graphics.circle("fill", x, y, 6)
-    --end
+    if focused then
+        love.graphics.setColor(color.white)
+        love.graphics.circle("fill", x, y, 6)
+        -- tooltip
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.rectangle("fill", x + 20, y - 4, 80, 40)
+        love.graphics.setColor(color.white)
+        love.graphics.print(string.format("point: %d\nvalue: %d", value1, value2), x + 24, y)
+    else
+        love.graphics.circle("fill", x, y, 6)
+    end
 
 end
 
+--- Callback to fill the area under the lines.
+-- You must overwrite this function to draw your own.
+--
+-- @tparam string dataset
+-- The name of the dataset currently drawn.
+--
+-- @tparam table triangles
+-- The collection of points to fill.
+-- To avoid concave polygons, the chart points are triangulated into
+-- this set of points that must be iterated over.
 function chart.drawFill(dataset, triangles)
 
-    --if dataset == "dataset 1" then
-        --love.graphics.setColor(211, 54, 130, 64)
-    --else
-        --love.graphics.setColor(38, 139, 210, 64)
-    --end
+    if dataset == "dataset 1" then
+        love.graphics.setColor(211, 54, 130, 64)
+    else
+        love.graphics.setColor(38, 139, 210, 64)
+    end
 
-    --for _, triangle in ipairs(triangles) do
-        --love.graphics.polygon("fill", triangle)
-    --end
+    for _, triangle in ipairs(triangles) do
+        love.graphics.polygon("fill", triangle)
+    end
 
 end
 
