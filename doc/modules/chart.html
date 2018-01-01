@@ -1,0 +1,581 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>harness documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aperture.html">aperture</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/digitroller.html">digitroller</a></li>
+  <li><a href="../modules/hotspot.html">hotspot</a></li>
+  <li><a href="../modules/button.html">button</a></li>
+  <li><a href="../modules/trig.html">trig</a></li>
+  <li><a href="../modules/widgetcollection.html">widgetcollection</a></li>
+  <li><strong>chart</strong></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/aperture-example.lua.html">aperture-example.lua</a></li>
+  <li><a href="../examples/button-example.lua.html">button-example.lua</a></li>
+  <li><a href="../examples/camera-example.lua.html">camera-example.lua</a></li>
+  <li><a href="../examples/chart-example.lua.html">chart-example.lua</a></li>
+  <li><a href="../examples/digitroller-example.lua.html">digitroller-example.lua</a></li>
+  <li><a href="../examples/full-example.lua.html">full-example.lua</a></li>
+  <li><a href="../examples/hotspot-example.lua.html">hotspot-example.lua</a></li>
+  <li><a href="../examples/sexy-button-example.lua.html">sexy-button-example.lua</a></li>
+  <li><a href="../examples/switch-example.lua.html">switch-example.lua</a></li>
+  <li><a href="../examples/trig-example.lua.html">trig-example.lua</a></li>
+  <li><a href="../examples/widget-collection-example.lua.html">widget-collection-example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>chart</code></h1>
+<p>Provides a chart display.</p>
+<p>
+ This module returns a constructor function that should be called
+ to create a new chart.
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>License</strong>: GPL v3</li>
+        <li><strong>Author</strong>: Wesley Werner</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#clear">clear ()</a></td>
+	<td class="summary">Clears all data points from the chart.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#data">data (points, name)</a></td>
+	<td class="summary">Add data points to the chart.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mousemoved">mousemoved (x, y, dx, dy, istouch)</a></td>
+	<td class="summary">Process mouse movement to allow focus on data points.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#update">update (dt)</a></td>
+	<td class="summary">Process chart animations.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#draw">draw ()</a></td>
+	<td class="summary">Draw the chart.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawGrid">drawGrid (width, height)</a></td>
+	<td class="summary">Callback to draw the grid.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawLabels">drawLabels (labels)</a></td>
+	<td class="summary">Callback to draw the axiz label.s
+ You must overwrite this function to draw your own.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawBorder">drawBorder (width, height)</a></td>
+	<td class="summary">Callback to draw the border.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawLine">drawLine (dataset, node1, node2)</a></td>
+	<td class="summary">Callback to draw the lines.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawNode">drawNode (dataset, node)</a></td>
+	<td class="summary">Callback to draw the joins between lines.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawFill">drawFill (dataset, triangles)</a></td>
+	<td class="summary">Callback to fill the area under the lines.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#pointdefinition">pointdefinition</a></td>
+	<td class="summary">A table of data points that represent the chart.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#labeldefinition">labeldefinition</a></td>
+	<td class="summary">Defines label data for you to draw.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#chartnode">chartnode</a></td>
+	<td class="summary">Defines a point in a line.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "clear"></a>
+    <strong>clear ()</strong>
+    </dt>
+    <dd>
+    Clears all data points from the chart.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "data"></a>
+    <strong>data (points, name)</strong>
+    </dt>
+    <dd>
+    Add data points to the chart.
+ Calling this multiple times adds new datasets to the chart.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">points</span>
+            <span class="types"><a class="type" href="../modules/chart.html#pointdefinition">pointdefinition</a></span>
+
+ The list of points in the dataset.
+
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The dataset name.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mousemoved"></a>
+    <strong>mousemoved (x, y, dx, dy, istouch)</strong>
+    </dt>
+    <dd>
+    Process mouse movement to allow focus on data points.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+        </li>
+        <li><span class="parameter">y</span>
+
+        </li>
+        <li><span class="parameter">dx</span>
+
+        </li>
+        <li><span class="parameter">dy</span>
+
+        </li>
+        <li><span class="parameter">istouch</span>
+        the focus radius around a node
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "update"></a>
+    <strong>update (dt)</strong>
+    </dt>
+    <dd>
+    Process chart animations.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+            <span class="types"><span class="type">number</span></span>
+
+ delta time as given by Love
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "draw"></a>
+    <strong>draw ()</strong>
+    </dt>
+    <dd>
+    Draw the chart.
+ This calls the chart drawing functions that you should overwrite.
+
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/chart.html#drawBorder">drawBorder</a></li>
+         <li><a href="../modules/chart.html#drawFill">drawFill</a></li>
+         <li><a href="../modules/chart.html#drawGrid">drawGrid</a></li>
+         <li><a href="../modules/chart.html#drawNode">drawNode</a></li>
+         <li><a href="../modules/chart.html#drawLabels">drawLabels</a></li>
+         <li><a href="../modules/chart.html#drawLine">drawLine</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "drawGrid"></a>
+    <strong>drawGrid (width, height)</strong>
+    </dt>
+    <dd>
+    Callback to draw the grid.
+ You must overwrite this function to draw your own.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The width of the chart.
+
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The height of the chart.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawLabels"></a>
+    <strong>drawLabels (labels)</strong>
+    </dt>
+    <dd>
+    Callback to draw the axiz label.s
+ You must overwrite this function to draw your own.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">labels</span>
+            <span class="types"><a class="type" href="../modules/chart.html#labeldefinition">labeldefinition</a></span>
+
+ A list of <a href="../modules/chart.html#labeldefinition">labeldefinition</a> items that you must draw.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawBorder"></a>
+    <strong>drawBorder (width, height)</strong>
+    </dt>
+    <dd>
+    Callback to draw the border.
+ You must overwrite this function to draw your own.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The width of the chart.
+
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The height of the chart.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawLine"></a>
+    <strong>drawLine (dataset, node1, node2)</strong>
+    </dt>
+    <dd>
+    Callback to draw the lines.
+ You must overwrite this function to draw your own.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dataset</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The name of the dataset currently drawn.
+
+        </li>
+        <li><span class="parameter">node1</span>
+            <span class="types"><a class="type" href="../modules/chart.html#chartnode">chartnode</a></span>
+
+ The first node in the line segment to draw.
+
+        </li>
+        <li><span class="parameter">node2</span>
+            <span class="types"><a class="type" href="../modules/chart.html#chartnode">chartnode</a></span>
+
+ The second node in the line segment to draw.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawNode"></a>
+    <strong>drawNode (dataset, node)</strong>
+    </dt>
+    <dd>
+    Callback to draw the joins between lines.
+ You must overwrite this function to draw your own.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dataset</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The name of the dataset currently drawn.
+
+        </li>
+        <li><span class="parameter">node</span>
+            <span class="types"><a class="type" href="../modules/chart.html#chartnode">chartnode</a></span>
+
+ The node on a join between line segments.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawFill"></a>
+    <strong>drawFill (dataset, triangles)</strong>
+    </dt>
+    <dd>
+    Callback to fill the area under the lines.
+ You must overwrite this function to draw your own.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dataset</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The name of the dataset currently drawn.
+
+        </li>
+        <li><span class="parameter">triangles</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
+ The collection of points to fill.
+ To avoid concave polygons, the chart points are triangulated into
+ this set of points that must be iterated over.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "pointdefinition"></a>
+    <strong>pointdefinition</strong>
+    </dt>
+    <dd>
+    A table of data points that represent the chart.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The value on the horizontal axiz.
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The value on the vertical axiz.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "labeldefinition"></a>
+    <strong>labeldefinition</strong>
+    </dt>
+    <dd>
+    Defines label data for you to draw.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+ The label text.
+
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The x position of the label.
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The y position of the label.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "chartnode"></a>
+    <strong>chartnode</strong>
+    </dt>
+    <dd>
+    Defines a point in a line.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The x screen position of the point.
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The y screen position of the point.
+
+        </li>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The horizontal axiz value of the point.
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">number</span></span>
+
+ The vertical axiz value of the point.
+
+        </li>
+        <li><span class="parameter">focus</span>
+            <span class="types"><span class="type">bool</span></span>
+
+ If the point is under the mouse cursor.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-01-01 23:09:33 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
