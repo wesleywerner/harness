@@ -16,8 +16,13 @@
 
 ]]--
 
---local module = { }
-local graph = { }
+--- Provides a chart display.
+--
+-- @author Wesley Werner
+-- @license GPL v3
+-- @module chart
+
+local chart = { }
 local thispath = select('1', ...):match(".+%.") or ""
 local tween = require(thispath.."tween")
 
@@ -40,13 +45,13 @@ color.blue      = {  38, 139, 210 }
 color.cyan      = {  42, 161, 152 }
 color.green     = { 133, 153,   0 }
 
-function graph:clear()
+function chart:clear()
 
     self.datapoints = { }
 
 end
 
-function graph:data(points, name)
+function chart:data(points, name)
 
     local xmin, ymin, xmax, ymax = math.huge, math.huge, 0, 0
 
@@ -64,7 +69,7 @@ function graph:data(points, name)
     self.scaleX = self.width / (xmax - xmin)
     self.scaleY = self.height / (ymax - ymin)
 
-    -- normalize values to the graph size
+    -- normalize values to the chart size
     local processed = { }
 
     for _, p in ipairs(points) do
@@ -113,7 +118,7 @@ function graph:data(points, name)
 
 end
 
-function graph:mousemoved(x, y, dx, dy, istouch)
+function chart:mousemoved(x, y, dx, dy, istouch)
 
     local radius = 10
 
@@ -132,15 +137,15 @@ function graph:mousemoved(x, y, dx, dy, istouch)
 
 end
 
-function graph:mousepressed(x, y, button, istouch)
+function chart:mousepressed(x, y, button, istouch)
 
 end
 
-function graph:mousereleased(x, y, button, istouch)
+function chart:mousereleased(x, y, button, istouch)
 
 end
 
-function graph:update(dt)
+function chart:update(dt)
 
     for _, data in ipairs(self.datapoints) do
         for _, point in ipairs(data.points) do
@@ -150,7 +155,7 @@ function graph:update(dt)
 
 end
 
-function graph:draw()
+function chart:draw()
 
     -- save state
     love.graphics.push()
@@ -237,7 +242,7 @@ function graph:draw()
 
 end
 
-function graph.drawGrid()
+function chart.drawGrid()
 
     --love.graphics.setColor(color.base3)
 
@@ -250,7 +255,7 @@ function graph.drawGrid()
 
 end
 
-function graph.drawLabels(labels)
+function chart.drawLabels(labels)
 
     --love.graphics.setColor(color.green)
 
@@ -270,14 +275,14 @@ function graph.drawLabels(labels)
 
 end
 
-function graph.drawBorder()
+function chart.drawBorder()
 
     --love.graphics.setColor(color.base1)
     --love.graphics.rectangle("line", 0, 0, self.width, self.height)
 
 end
 
-function graph.drawLine(dataset, point1, point2)
+function chart.drawLine(dataset, point1, point2)
 
     ---- line
     --if dataset == "dataset 1" then
@@ -292,7 +297,7 @@ function graph.drawLine(dataset, point1, point2)
 
 end
 
-function graph.drawJoin(dataset, x, y, value1, value2, focused)
+function chart.drawJoin(dataset, x, y, value1, value2, focused)
 
     --if dataset == "dataset 1" then
         --love.graphics.setColor(color.magenta)
@@ -314,7 +319,7 @@ function graph.drawJoin(dataset, x, y, value1, value2, focused)
 
 end
 
-function graph.drawFill(dataset, triangles)
+function chart.drawFill(dataset, triangles)
 
     --if dataset == "dataset 1" then
         --love.graphics.setColor(211, 54, 130, 64)
@@ -331,7 +336,7 @@ end
 return function (width, height)
 
     local instance = { }
-    setmetatable(instance, {__index = graph} )
+    setmetatable(instance, {__index = chart } )
     instance.datapoints = { }
     instance.width = width
     instance.height = height

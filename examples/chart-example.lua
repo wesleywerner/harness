@@ -35,12 +35,12 @@ color.blue      = {  38, 139, 210 }
 color.cyan      = {  42, 161, 152 }
 color.green     = { 133, 153,   0 }
 
-graph = require("harness.graph")
+chart = require("harness.chart")
 
 local function setPoints()
 
-    -- clear the graph
-    sexygraph:clear()
+    -- clear the chart
+    sexychart:clear()
 
     -- create two datasets
     for ds=1, 2 do
@@ -51,7 +51,7 @@ local function setPoints()
             table.insert(points, { x=n, y=math.random(20, 90) })
         end
 
-        sexygraph:data(points, string.format("dataset %d", ds))
+        sexychart:data(points, string.format("dataset %d", ds))
 
     end
 
@@ -61,11 +61,11 @@ local function drawGrid()
 
     love.graphics.setColor(color.base3)
 
-    for x=0, sexygraph.width, 20 do
-        love.graphics.line(x, 0, x, sexygraph.height)
+    for x=0, sexychart.width, 20 do
+        love.graphics.line(x, 0, x, sexychart.height)
     end
-    for y=0, sexygraph.height, 20 do
-        love.graphics.line(0, y, sexygraph.width, y)
+    for y=0, sexychart.height, 20 do
+        love.graphics.line(0, y, sexychart.width, y)
     end
 
 end
@@ -93,7 +93,7 @@ end
 local function drawBorder()
 
     love.graphics.setColor(color.base1)
-    love.graphics.rectangle("line", 0, 0, sexygraph.width, sexygraph.height)
+    love.graphics.rectangle("line", 0, 0, sexychart.width, sexychart.height)
 
 end
 
@@ -121,7 +121,7 @@ local function drawJoin(dataset, x, y, value1, value2, focused)
     end
 
     if focused then
-        love.graphics.setColor(color.white)
+        love.graphics.setColor(color.green)
         love.graphics.circle("fill", x, y, 6)
         -- tooltip
         love.graphics.setColor(0, 0, 0)
@@ -150,14 +150,14 @@ end
 
 function love.load()
 
-    sexygraph = graph(400, 200)
+    sexychart = chart(400, 200)
     setPoints()
-    sexygraph.drawGrid = drawGrid
-    sexygraph.drawLabels = drawLabels
-    sexygraph.drawBorder = drawBorder
-    sexygraph.drawLine = drawLine
-    sexygraph.drawJoin = drawJoin
-    sexygraph.drawFill = drawFill
+    sexychart.drawGrid = drawGrid
+    sexychart.drawLabels = drawLabels
+    sexychart.drawBorder = drawBorder
+    sexychart.drawLine = drawLine
+    sexychart.drawJoin = drawJoin
+    sexychart.drawFill = drawFill
 
 end
 
@@ -169,14 +169,14 @@ end
 
 function love.mousemoved(x, y, dx, dy, istouch)
 
-    -- account for graph position on screen
-    sexygraph:mousemoved(x - 100, y - 100, dx, dy, istouch)
+    -- account for chart position on screen
+    sexychart:mousemoved(x - 100, y - 100, dx, dy, istouch)
 
 end
 
 function love.update(dt)
 
-    sexygraph:update(dt)
+    sexychart:update(dt)
 
 end
 
@@ -185,7 +185,7 @@ function love.draw()
     love.graphics.push()
     love.graphics.translate(100, 100)
     love.graphics.clear(color.base2)
-    sexygraph:draw()
+    sexychart:draw()
     love.graphics.pop()
 
 end
