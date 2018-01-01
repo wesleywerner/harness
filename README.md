@@ -64,6 +64,15 @@ Also see [widget collection documentation](doc/modules/widgetcollection.html)
 
 ![button screenshot](figures/figure3.png)
 
+# chart
+
+Provides a line chart display. Overwrite the drawing functions to draw your own beautiful lines.
+
+[Documentation](doc/modules/chart.html)
+
+![button screenshot](figures/figure4.png)
+
+
 # trig
 
 Provides some trigonometry functions.
