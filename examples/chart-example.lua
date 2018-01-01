@@ -37,35 +37,46 @@ color.green     = { 133, 153,   0 }
 
 chart = require("harness.chart")
 
-local function setPoints()
+local function generateData()
 
     -- clear the chart
     sexychart:clear()
+    plainchart:clear()
 
-    -- create two datasets
+    -- create two sexy datasets
     for ds=1, 2 do
 
         local points = { }
 
         for n=1, 10 do
-            table.insert(points, { x=n, y=math.random(20, 90) })
+            table.insert(points, { a=n, b=math.random(20, 90) })
         end
 
         sexychart:data(points, string.format("dataset %d", ds))
 
     end
 
+    -- create one plain dataset
+    local points = { }
+    for n=1, 10 do
+        table.insert(points, { a=n, b=math.random(1, 100) })
+    end
+    plainchart:data(points, "plain dataset")
+
 end
 
-local function drawGrid()
+local function drawGrid(width, height)
 
     love.graphics.setColor(color.base3)
 
-    for x=0, sexychart.width, 20 do
-        love.graphics.line(x, 0, x, sexychart.height)
+    -- vertical lines
+    for x=0, width, 20 do
+        love.graphics.line(x, 0, x, height)
     end
-    for y=0, sexychart.height, 20 do
-        love.graphics.line(0, y, sexychart.width, y)
+
+    -- horizontal lines
+    for y=0, height, 20 do
+        love.graphics.line(0, y, width, y)
     end
 
 end
@@ -81,25 +92,25 @@ local function drawLabels(labels)
 
         -- print label text
         if label.axiz == "x" then
-            love.graphics.print(label.text, label.x, label.y + 12)
+            love.graphics.print(label.text, math.floor(label.x), math.floor(label.y + 12))
         else
-            love.graphics.print(label.text, label.x - 24, label.y - 6)
+            love.graphics.print(label.text, math.floor(label.x - 24), math.floor(label.y - 6))
         end
 
     end
 
 end
 
-local function drawBorder()
+local function drawBorder(width, height)
 
     love.graphics.setColor(color.base1)
-    love.graphics.rectangle("line", 0, 0, sexychart.width, sexychart.height)
+    love.graphics.rectangle("line", 0, 0, width, height)
 
 end
 
-local function drawLine(dataset, point1, point2)
+local function drawLine(dataset, node1, node2)
 
-    -- line
+    -- switch color for each dataset
     if dataset == "dataset 1" then
         love.graphics.setColor(color.magenta)
     else
@@ -107,12 +118,12 @@ local function drawLine(dataset, point1, point2)
     end
 
     love.graphics.setLineWidth(4)
-    love.graphics.line(point1.x, point1.y, point2.x, point2.y)
+    love.graphics.line(node1.x, node1.y, node2.x, node2.y)
     love.graphics.setLineWidth(1)
 
 end
 
-local function drawJoin(dataset, x, y, value1, value2, focused)
+local function drawNode(dataset, node)
 
     if dataset == "dataset 1" then
         love.graphics.setColor(color.magenta)
@@ -120,16 +131,17 @@ local function drawJoin(dataset, x, y, value1, value2, focused)
         love.graphics.setColor(color.blue)
     end
 
-    if focused then
+    if node.focus then
         love.graphics.setColor(color.green)
-        love.graphics.circle("fill", x, y, 6)
+        love.graphics.circle("fill", node.x, node.y, 6)
         -- tooltip
         love.graphics.setColor(0, 0, 0)
-        love.graphics.rectangle("fill", x + 20, y - 4, 80, 40)
+        love.graphics.rectangle("fill", node.x + 20, node.y - 4, 80, 40)
         love.graphics.setColor(color.white)
-        love.graphics.print(string.format("point: %d\nvalue: %d", value1, value2), x + 24, y)
+        love.graphics.print(string.format("point: %d\nvalue: %d", node.a, node.b),
+            math.floor(node.x + 24), math.floor(node.y))
     else
-        love.graphics.circle("fill", x, y, 6)
+        love.graphics.circle("fill", node.x, node.y, 6)
     end
 
 end
@@ -150,42 +162,63 @@ end
 
 function love.load()
 
+    -- overwrite drawing functions
     sexychart = chart(400, 200)
-    setPoints()
     sexychart.drawGrid = drawGrid
     sexychart.drawLabels = drawLabels
     sexychart.drawBorder = drawBorder
     sexychart.drawLine = drawLine
-    sexychart.drawJoin = drawJoin
+    sexychart.drawNode = drawNode
     sexychart.drawFill = drawFill
+
+    -- store the chart position.
+    -- This is not used by the chart component, only by our example.
+    sexychart.left = 100
+    sexychart.top = 50
+
+    -- use default drawing functions (black and white)
+    plainchart = chart(600, 100)
+    plainchart.left = 100
+    plainchart.top = 400
+
+    generateData()
 
 end
 
 function love.mousepressed(x, y, button, istouch)
 
-    setPoints()
+    generateData()
 
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
 
     -- account for chart position on screen
-    sexychart:mousemoved(x - 100, y - 100, dx, dy, istouch)
+    sexychart:mousemoved(x - sexychart.left, y - sexychart.top, dx, dy, istouch)
+    plainchart:mousemoved(x - plainchart.left, y - plainchart.top, dx, dy, istouch)
 
 end
 
 function love.update(dt)
 
     sexychart:update(dt)
+    plainchart:update(dt)
 
 end
 
 function love.draw()
 
+    love.graphics.setColor(color.base2)
+    love.graphics.rectangle("fill", 0, 0, 800, 300)
+
     love.graphics.push()
-    love.graphics.translate(100, 100)
-    love.graphics.clear(color.base2)
+    love.graphics.translate(sexychart.left, sexychart.top)
     sexychart:draw()
+    love.graphics.pop()
+
+    love.graphics.push()
+    love.graphics.translate(plainchart.left, plainchart.top)
+    plainchart:draw()
     love.graphics.pop()
 
 end
@@ -194,6 +227,6 @@ function love.keypressed(key)
     if key == "escape" then
         love.event.quit()
     else
-        setPoints()
+        generateData()
     end
 end

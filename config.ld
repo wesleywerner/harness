@@ -5,7 +5,8 @@ file = {
   "hotspot.lua",
   "button.lua",
   "trig.lua",
-  "widgetcollection.lua"
+  "widgetcollection.lua",
+  "chart.lua"
 }
 examples = {
   "examples",
