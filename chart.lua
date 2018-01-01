@@ -17,6 +17,8 @@
 ]]--
 
 --- Provides a chart display.
+-- This module returns a constructor function that should be called
+-- to create a new chart.
 --
 -- @author Wesley Werner
 -- @license GPL v3
@@ -33,21 +35,34 @@
 -- The value on the vertical axiz.
 
 
+--- Defines label data for you to draw.
+-- @table labeldefinition
+--
+-- @tfield string text
+-- The label text.
+--
+-- @tfield number x
+-- The x position of the label.
+--
+-- @tfield number y
+-- The y position of the label.
+
+
 --- Defines a point in a line.
 --
 -- @table chartnode
 --
 -- @tfield number x
--- The x position of the point.
+-- The x screen position of the point.
 --
 -- @tfield number y
--- The y position of the point.
+-- The y screen position of the point.
 --
--- @tfield number xvalue
--- The x value of the point.
+-- @tfield number a
+-- The horizontal axiz value of the point.
 --
--- @tfield number yvalue
--- The y value of the point.
+-- @tfield number b
+-- The vertical axiz value of the point.
 --
 -- @tfield bool focus
 -- If the point is under the mouse cursor.
@@ -56,25 +71,6 @@
 local chart = { }
 local thispath = select('1', ...):match(".+%.") or ""
 local tween = require(thispath.."tween")
-
-local color = { }
-color.white     = { 255, 255, 255 }
-color.base03    = {   0,  43,  54 }  -- darker background tones
-color.base02    = {   7,  54,  66 }  -- dark background tones
-color.base01    = {  88, 110, 117 }  -- darker content tones
-color.base00    = { 101, 123, 131 }  -- dark content tones
-color.base0     = { 131, 148, 150 }  -- light content tones
-color.base1     = { 147, 161, 161 }  -- lighter content tones
-color.base2     = { 238, 232, 213 }  -- light background tones
-color.base3     = { 253, 246, 227 }  -- lighter background tones
-color.yellow    = { 181, 137,   0 }
-color.orange    = { 203,  75,  22 }
-color.red       = { 220,  50,  47 }
-color.magenta   = { 211,  54, 130 }
-color.violet    = { 108, 113, 196 }
-color.blue      = {  38, 139, 210 }
-color.cyan      = {  42, 161, 152 }
-color.green     = { 133, 153,   0 }
 
 --- Clears all data points from the chart.
 function chart:clear()
@@ -143,14 +139,14 @@ function chart:data(points, name)
     local yrange = ymax < 20 and math.ceil(ymax * .1) or 10
     for n=ymin, ymax, yrange do
         local sx = 0
-        local sy = self.height - (self.scaleY * (n - ymin))
+        local sy = math.floor(self.height - (self.scaleY * (n - ymin)))
         table.insert(self.labels, { x=sx, y=sy, text=n, axiz="y" })
     end
 
     -- x axiz
     local xrange = xmax < 20 and math.ceil(xmax * .1) or 10
     for n=xmin, xmax, xrange do
-        local sx = self.scaleX * (n - xmin)
+        local sx = math.floor(self.scaleX * (n - xmin))
         local sy = self.height
         table.insert(self.labels, { x=sx, y=sy, text=n, axiz="x" })
     end
@@ -160,30 +156,36 @@ end
 --- Process mouse movement to allow focus on data points.
 function chart:mousemoved(x, y, dx, dy, istouch)
 
+    -- the focus radius around a node
     local radius = 10
+
+    -- clear the focused node
+    self.focusedNode = nil
 
     for _, data in ipairs(self.datapoints) do
 
         for _, p in ipairs(data.points) do
 
-            local inX = x > (p.x - radius) and x < (p.x + radius)
-            local inY = y > (p.y - radius) and y < (p.y + radius)
+            -- reset focus
+            p.focus = false
 
-            p.focus = inX and inY
+            -- stop if we already have one focused
+            if self.focusedNode == nil then
+
+                local inX = x > (p.x - radius) and x < (p.x + radius)
+                local inY = y > (p.y - radius) and y < (p.y + radius)
+                p.focus = inX and inY
+
+                -- track the focused item
+                if p.focus then self.focusedNode = { name=data.name, point=p } end
+
+            end
 
         end
 
     end
 
 end
-
---function chart:mousepressed(x, y, button, istouch)
-
---end
-
---function chart:mousereleased(x, y, button, istouch)
-
---end
 
 --- Process chart animations.
 --
@@ -205,7 +207,7 @@ end
 -- @see drawBorder
 -- @see drawFill
 -- @see drawGrid
--- @see drawJoin
+-- @see drawNode
 -- @see drawLabels
 -- @see drawLine
 function chart:draw()
@@ -213,8 +215,8 @@ function chart:draw()
     -- save state
     love.graphics.push()
 
-    self.drawGrid()
-    self.drawBorder()
+    self.drawGrid(self.width, self.height)
+    self.drawBorder(self.width, self.height)
     self.drawLabels(self.labels)
 
     -- process data points
@@ -232,62 +234,41 @@ function chart:draw()
         local triangles = love.math.triangulate(fillpoints)
         self.drawFill(data.name, triangles)
 
-        -- draw points
-        for n, point in ipairs(data.points) do
+        -- draw the chart lines.
+        -- skip first point as they come in pairs.
+        for n=2, #data.points do
 
-            -- skip first point as they come in pairs
-            if n > 1 then
-                self.drawLine(data.name,
-                    {
-                        xvalue=data.points[n-1].a,
-                        yvalue=data.points[n-1].b,
-                        x=data.points[n-1].x,
-                        y=data.points[n-1].y,
-                        focus=data.points[n-1].focus
-                    },
-                    {
-                        xvalue=data.points[n].a,
-                        yvalue=data.points[n].b,
-                        x=data.points[n].x,
-                        y=data.points[n].y,
-                        focus=data.points[n].focus
-                    }
-                )
-            end
+            self.drawLine(data.name,
+                {
+                    a=data.points[n-1].a,
+                    b=data.points[n-1].b,
+                    x=data.points[n-1].x,
+                    y=data.points[n-1].y,
+                    focus=data.points[n-1].focus
+                },
+                {
+                    a=data.points[n].a,
+                    b=data.points[n].b,
+                    x=data.points[n].x,
+                    y=data.points[n].y,
+                    focus=data.points[n].focus
+                }
+            )
 
         end
 
     end
 
-    -- draw joins (track focused item and draw it last)
-    local focused = nil
+    -- draw joint nodes
     for _, data in ipairs(self.datapoints) do
-
         for n, point in ipairs(data.points) do
-
-            if (focused) or (not point.focus) then
-                self.drawJoin(data.name,
-                    math.floor(point.x),
-                    math.floor(point.y),
-                    point.a,
-                    point.b,
-                    false
-                )
-            else
-                focused = { name=data.name, point=point }
-            end
-
+            self.drawNode(data.name, point)
         end
-
     end
-    if focused then
-        self.drawJoin(focused.name,
-            math.floor(focused.point.x),
-            math.floor(focused.point.y),
-            focused.point.a,
-            focused.point.b,
-            focused.point.focus
-        )
+
+    -- draw the focused node last so it sits on top of other drawings
+    if self.focusedNode then
+        self.drawNode(self.focusedNode.name, self.focusedNode.point)
     end
 
     -- restore state
@@ -297,15 +278,21 @@ end
 
 --- Callback to draw the grid.
 -- You must overwrite this function to draw your own.
-function chart.drawGrid()
+--
+-- @tparam number width
+-- The width of the chart.
+--
+-- @tparam number height
+-- The height of the chart.
+function chart.drawGrid(width, height)
 
-    love.graphics.setColor(color.base3)
+    love.graphics.setColor(32, 32, 32)
 
-    for x=0, self.width, 20 do
-        love.graphics.line(x, 0, x, self.height)
+    for x=0, width, 20 do
+        love.graphics.line(x, 0, x, height)
     end
-    for y=0, self.height, 20 do
-        love.graphics.line(0, y, self.width, y)
+    for y=0, height, 20 do
+        love.graphics.line(0, y, width, y)
     end
 
 end
@@ -314,22 +301,10 @@ end
 -- You must overwrite this function to draw your own.
 --
 -- @tparam labeldefinition labels
--- A table of @{labeldefinition} items that you must draw.
+-- A list of @{labeldefinition} items that you must draw.
 function chart.drawLabels(labels)
 
-    --- Defines label data for you to draw.
-    -- @table labeldefinition
-    --
-    -- @tfield string text
-    -- The label text.
-    --
-    -- @tfield number x
-    -- The x position of the label.
-    --
-    -- @tfield number y
-    -- The y position of the label.
-
-    love.graphics.setColor(color.green)
+    love.graphics.setColor(255, 255, 255)
 
     for _, label in ipairs(labels) do
 
@@ -349,10 +324,16 @@ end
 
 --- Callback to draw the border.
 -- You must overwrite this function to draw your own.
-function chart.drawBorder()
+--
+-- @tparam number width
+-- The width of the chart.
+--
+-- @tparam number height
+-- The height of the chart.
+function chart.drawBorder(width, height)
 
-    love.graphics.setColor(color.base1)
-    love.graphics.rectangle("line", 0, 0, self.width, self.height)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.rectangle("line", 0, 0, width, height)
 
 end
 
@@ -362,47 +343,44 @@ end
 -- @tparam string dataset
 -- The name of the dataset currently drawn.
 --
--- @tparam chartnode point1
--- The first point in the line segment to draw.
+-- @tparam chartnode node1
+-- The first node in the line segment to draw.
 --
--- @tparam chartnode point2
--- The second point in the line segment to draw.
-function chart.drawLine(dataset, point1, point2)
+-- @tparam chartnode node2
+-- The second node in the line segment to draw.
+function chart.drawLine(dataset, node1, node2)
 
-    -- line
-    if dataset == "dataset 1" then
-        love.graphics.setColor(color.magenta)
-    else
-        love.graphics.setColor(color.blue)
-    end
-
-    love.graphics.setLineWidth(4)
-    love.graphics.line(point1.x, point1.y, point2.x, point2.y)
-    love.graphics.setLineWidth(1)
+    love.graphics.setColor(255, 255, 255)
+    --love.graphics.setLineWidth(4)
+    love.graphics.line(node1.x, node1.y, node2.x, node2.y)
+    --love.graphics.setLineWidth(1)
 
 end
 
 --- Callback to draw the joins between lines.
 -- You must overwrite this function to draw your own.
--- TODO: change to use chartnode parameters.
-function chart.drawJoin(dataset, x, y, value1, value2, focused)
+--
+-- @tparam string dataset
+-- The name of the dataset currently drawn.
+--
+-- @tparam chartnode node
+-- The node on a join between line segments.
+function chart.drawNode(dataset, node)
 
-    if dataset == "dataset 1" then
-        love.graphics.setColor(color.magenta)
-    else
-        love.graphics.setColor(color.blue)
-    end
+    love.graphics.setColor(255, 255, 255)
 
-    if focused then
-        love.graphics.setColor(color.white)
-        love.graphics.circle("fill", x, y, 6)
+    if node.focus then
+        love.graphics.circle("fill", node.x, node.y, 6)
         -- tooltip
         love.graphics.setColor(0, 0, 0)
-        love.graphics.rectangle("fill", x + 20, y - 4, 80, 40)
-        love.graphics.setColor(color.white)
-        love.graphics.print(string.format("point: %d\nvalue: %d", value1, value2), x + 24, y)
+        love.graphics.rectangle("fill", node.x + 20, node.y - 4, 80, 40)
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.rectangle("line", node.x + 20, node.y - 4, 80, 40)
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.print(string.format("point: %d\nvalue: %d", node.a, node.b),
+            math.floor(node.x + 24), math.floor(node.y))
     else
-        love.graphics.circle("fill", x, y, 6)
+        love.graphics.circle("line", node.x, node.y, 6)
     end
 
 end
@@ -419,11 +397,7 @@ end
 -- this set of points that must be iterated over.
 function chart.drawFill(dataset, triangles)
 
-    if dataset == "dataset 1" then
-        love.graphics.setColor(211, 54, 130, 64)
-    else
-        love.graphics.setColor(38, 139, 210, 64)
-    end
+    love.graphics.setColor(255, 255, 255, 128)
 
     for _, triangle in ipairs(triangles) do
         love.graphics.polygon("fill", triangle)
@@ -436,6 +410,7 @@ return function (width, height)
     local instance = { }
     setmetatable(instance, {__index = chart } )
     instance.datapoints = { }
+    instance.labels = { }
     instance.width = width
     instance.height = height
     return instance
