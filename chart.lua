@@ -223,16 +223,18 @@ function chart:draw()
     for _, data in ipairs(self.datapoints) do
 
         -- fill area
-        local fillpoints = { 0, self.height }
-        for _, p in ipairs(data.points) do
-            table.insert(fillpoints, p.x)
-            table.insert(fillpoints, p.y)
+        if #data.points > 0 then
+            local fillpoints = { 0, self.height }
+            for _, p in ipairs(data.points) do
+                table.insert(fillpoints, p.x)
+                table.insert(fillpoints, p.y)
+            end
+            table.insert(fillpoints, self.width)
+            table.insert(fillpoints, self.height)
+            -- triangulate the points to avoid concave polygons
+            local triangles = love.math.triangulate(fillpoints)
+            self:drawFill(data.name, triangles)
         end
-        table.insert(fillpoints, self.width)
-        table.insert(fillpoints, self.height)
-        -- triangulate the points to avoid concave polygons
-        local triangles = love.math.triangulate(fillpoints)
-        self:drawFill(data.name, triangles)
 
         -- draw the chart lines.
         -- skip first point as they come in pairs.
