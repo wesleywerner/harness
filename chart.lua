@@ -140,7 +140,7 @@ function chart:data(points, name)
     for n=ymin, ymax, yrange do
         local sx = 0
         local sy = math.floor(self.height - (self.scaleY * (n - ymin)))
-        table.insert(self.labels, { x=sx, y=sy, text=n, axiz="y" })
+        table.insert(self.labels, { x=sx, y=sy, text=math.floor(n), axiz="y" })
     end
 
     -- x axiz
@@ -148,7 +148,7 @@ function chart:data(points, name)
     for n=xmin, xmax, xrange do
         local sx = math.floor(self.scaleX * (n - xmin))
         local sy = self.height
-        table.insert(self.labels, { x=sx, y=sy, text=n, axiz="x" })
+        table.insert(self.labels, { x=sx, y=sy, text=math.floor(n), axiz="x" })
     end
 
 end
@@ -373,11 +373,11 @@ function chart.drawNode(dataset, node)
         love.graphics.circle("fill", node.x, node.y, 6)
         -- tooltip
         love.graphics.setColor(0, 0, 0)
-        love.graphics.rectangle("fill", node.x + 20, node.y - 4, 80, 40)
+        love.graphics.rectangle("fill", node.x + 20, node.y - 4, 90, 40)
         love.graphics.setColor(255, 255, 255)
-        love.graphics.rectangle("line", node.x + 20, node.y - 4, 80, 40)
+        love.graphics.rectangle("line", node.x + 20, node.y - 4, 90, 40)
         love.graphics.setColor(255, 255, 255)
-        love.graphics.print(string.format("point: %d\nvalue: %d", node.a, node.b),
+        love.graphics.print(string.format("point: %.2f\nvalue: %.2f", node.a, node.b),
             math.floor(node.x + 24), math.floor(node.y))
     else
         love.graphics.circle("line", node.x, node.y, 6)

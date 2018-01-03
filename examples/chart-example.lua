@@ -59,7 +59,7 @@ local function generateData()
     -- create one plain dataset
     local points = { }
     for n=1, 10 do
-        table.insert(points, { a=n, b=math.random(1, 100) })
+        table.insert(points, { a=n, b=math.random(1, 100) + math.random() })
     end
     plainchart:data(points, "plain dataset")
 
@@ -136,7 +136,7 @@ local function drawNode(dataset, node)
         love.graphics.circle("fill", node.x, node.y, 6)
         -- tooltip
         love.graphics.setColor(0, 0, 0)
-        love.graphics.rectangle("fill", node.x + 20, node.y - 4, 80, 40)
+        love.graphics.rectangle("fill", node.x + 20, node.y - 4, 90, 40)
         love.graphics.setColor(color.white)
         love.graphics.print(string.format("point: %d\nvalue: %d", node.a, node.b),
             math.floor(node.x + 24), math.floor(node.y))
