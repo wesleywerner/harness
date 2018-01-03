@@ -65,7 +65,7 @@ local function generateData()
 
 end
 
-local function drawGrid(width, height)
+local function drawGrid(chart, width, height)
 
     love.graphics.setColor(color.base3)
 
@@ -81,7 +81,7 @@ local function drawGrid(width, height)
 
 end
 
-local function drawLabels(labels)
+local function drawLabels(chart, labels)
 
     love.graphics.setColor(color.green)
 
@@ -101,14 +101,14 @@ local function drawLabels(labels)
 
 end
 
-local function drawBorder(width, height)
+local function drawBorder(chart, width, height)
 
     love.graphics.setColor(color.base1)
     love.graphics.rectangle("line", 0, 0, width, height)
 
 end
 
-local function drawLine(dataset, node1, node2)
+local function drawLine(chart, dataset, node1, node2)
 
     -- switch color for each dataset
     if dataset == "dataset 1" then
@@ -123,7 +123,7 @@ local function drawLine(dataset, node1, node2)
 
 end
 
-local function drawNode(dataset, node)
+local function drawNode(chart, dataset, node)
 
     if dataset == "dataset 1" then
         love.graphics.setColor(color.magenta)
@@ -146,7 +146,7 @@ local function drawNode(dataset, node)
 
 end
 
-local function drawFill(dataset, triangles)
+local function drawFill(chart, dataset, triangles)
 
     if dataset == "dataset 1" then
         love.graphics.setColor(211, 54, 130, 64)

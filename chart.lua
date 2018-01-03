@@ -215,9 +215,9 @@ function chart:draw()
     -- save state
     love.graphics.push()
 
-    self.drawGrid(self.width, self.height)
-    self.drawBorder(self.width, self.height)
-    self.drawLabels(self.labels)
+    self:drawGrid(self.width, self.height)
+    self:drawBorder(self.width, self.height)
+    self:drawLabels(self.labels)
 
     -- process data points
     for _, data in ipairs(self.datapoints) do
@@ -232,13 +232,13 @@ function chart:draw()
         table.insert(fillpoints, self.height)
         -- triangulate the points to avoid concave polygons
         local triangles = love.math.triangulate(fillpoints)
-        self.drawFill(data.name, triangles)
+        self:drawFill(data.name, triangles)
 
         -- draw the chart lines.
         -- skip first point as they come in pairs.
         for n=2, #data.points do
 
-            self.drawLine(data.name,
+            self:drawLine(data.name,
                 {
                     a=data.points[n-1].a,
                     b=data.points[n-1].b,
@@ -262,13 +262,13 @@ function chart:draw()
     -- draw joint nodes
     for _, data in ipairs(self.datapoints) do
         for n, point in ipairs(data.points) do
-            self.drawNode(data.name, point)
+            self:drawNode(data.name, point)
         end
     end
 
     -- draw the focused node last so it sits on top of other drawings
     if self.focusedNode then
-        self.drawNode(self.focusedNode.name, self.focusedNode.point)
+        self:drawNode(self.focusedNode.name, self.focusedNode.point)
     end
 
     -- restore state
@@ -279,12 +279,15 @@ end
 --- Callback to draw the grid.
 -- You must overwrite this function to draw your own.
 --
+-- @tparam table chart
+-- The chart instance.
+--
 -- @tparam number width
 -- The width of the chart.
 --
 -- @tparam number height
 -- The height of the chart.
-function chart.drawGrid(width, height)
+function chart.drawGrid(chart, width, height)
 
     love.graphics.setColor(32, 32, 32)
 
@@ -300,9 +303,12 @@ end
 --- Callback to draw the axiz label.s
 -- You must overwrite this function to draw your own.
 --
+-- @tparam table chart
+-- The chart instance.
+--
 -- @tparam labeldefinition labels
 -- A list of @{labeldefinition} items that you must draw.
-function chart.drawLabels(labels)
+function chart.drawLabels(chart, labels)
 
     love.graphics.setColor(255, 255, 255)
 
@@ -325,12 +331,15 @@ end
 --- Callback to draw the border.
 -- You must overwrite this function to draw your own.
 --
+-- @tparam table chart
+-- The chart instance.
+--
 -- @tparam number width
 -- The width of the chart.
 --
 -- @tparam number height
 -- The height of the chart.
-function chart.drawBorder(width, height)
+function chart.drawBorder(chart, width, height)
 
     love.graphics.setColor(255, 255, 255)
     love.graphics.rectangle("line", 0, 0, width, height)
@@ -340,6 +349,9 @@ end
 --- Callback to draw the lines.
 -- You must overwrite this function to draw your own.
 --
+-- @tparam table chart
+-- The chart instance.
+--
 -- @tparam string dataset
 -- The name of the dataset currently drawn.
 --
@@ -348,7 +360,7 @@ end
 --
 -- @tparam chartnode node2
 -- The second node in the line segment to draw.
-function chart.drawLine(dataset, node1, node2)
+function chart.drawLine(chart, dataset, node1, node2)
 
     love.graphics.setColor(255, 255, 255)
     --love.graphics.setLineWidth(4)
@@ -360,12 +372,15 @@ end
 --- Callback to draw the joins between lines.
 -- You must overwrite this function to draw your own.
 --
+-- @tparam table chart
+-- The chart instance.
+--
 -- @tparam string dataset
 -- The name of the dataset currently drawn.
 --
 -- @tparam chartnode node
 -- The node on a join between line segments.
-function chart.drawNode(dataset, node)
+function chart.drawNode(chart, dataset, node)
 
     love.graphics.setColor(255, 255, 255)
 
@@ -388,6 +403,9 @@ end
 --- Callback to fill the area under the lines.
 -- You must overwrite this function to draw your own.
 --
+-- @tparam table chart
+-- The chart instance.
+--
 -- @tparam string dataset
 -- The name of the dataset currently drawn.
 --
@@ -395,7 +413,7 @@ end
 -- The collection of points to fill.
 -- To avoid concave polygons, the chart points are triangulated into
 -- this set of points that must be iterated over.
-function chart.drawFill(dataset, triangles)
+function chart.drawFill(chart, dataset, triangles)
 
     love.graphics.setColor(255, 255, 255, 128)
 
