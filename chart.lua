@@ -99,7 +99,7 @@ function chart:data(points, name)
         if p.b > ymax then ymax = p.b end
     end
 
-    print(string.format("min/max = %d/%d", ymin, ymax))
+    --print(string.format("min/max = %d/%d", ymin, ymax))
 
     -- scale of the chart
     self.scaleX = self.width / (xmax - xmin)
@@ -124,13 +124,13 @@ function chart:data(points, name)
 
         newpoint.tween = tween.new(1, newpoint, { y=sy }, "outCubic")
 
-        print(string.format("point %d/%d == %d/%d", p.a, p.b, sx, sy))
+        --print(string.format("point %d/%d == %d/%d", p.a, p.b, sx, sy))
 
     end
 
     table.insert(self.datapoints, { name=name, points=processed } )
 
-    print(string.format("scales: %.2f/%.2f", self.scaleX, self.scaleY))
+    --print(string.format("scales: %.2f/%.2f", self.scaleX, self.scaleY))
 
     -- create labels
     self.labels = { }
