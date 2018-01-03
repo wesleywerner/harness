@@ -103,7 +103,7 @@ function chart:data(points, name)
 
     -- scale of the chart
     self.scaleX = self.width / (xmax - xmin)
-    self.scaleY = self.height / (ymax - ymin)
+    self.scaleY = self.height / math.max(1, ymax - ymin)
 
     -- normalize values to the chart size
     local processed = { }
