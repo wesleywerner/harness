@@ -136,19 +136,23 @@ function chart:data(points, name)
     self.labels = { }
 
     -- y axiz
-    local yrange = ymax < 20 and math.ceil(ymax * .1) or 10
-    for n=ymin, ymax, yrange do
-        local sx = 0
-        local sy = math.floor(self.height - (self.scaleY * (n - ymin)))
-        table.insert(self.labels, { x=sx, y=sy, text=math.floor(n), axiz="y" })
+    if ymax > ymin then
+        local yrange = ymax < 20 and math.ceil(ymax * .1) or 10
+        for n=ymin, ymax, yrange do
+            local sx = 0
+            local sy = math.floor(self.height - (self.scaleY * (n - ymin)))
+            table.insert(self.labels, { x=sx, y=sy, text=math.floor(n), axiz="y" })
+        end
     end
 
     -- x axiz
-    local xrange = xmax < 20 and math.ceil(xmax * .1) or 10
-    for n=xmin, xmax, xrange do
-        local sx = math.floor(self.scaleX * (n - xmin))
-        local sy = self.height
-        table.insert(self.labels, { x=sx, y=sy, text=math.floor(n), axiz="x" })
+    if xmax > xmin then
+        local xrange = xmax < 20 and math.ceil(xmax * .1) or 10
+        for n=xmin, xmax, xrange do
+            local sx = math.floor(self.scaleX * (n - xmin))
+            local sy = self.height
+            table.insert(self.labels, { x=sx, y=sy, text=math.floor(n), axiz="x" })
+        end
     end
 
 end
