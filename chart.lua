@@ -155,6 +155,9 @@ function chart:data(points, name)
         end
     end
 
+    -- clear the focused node
+    self.focusedNode = nil
+
 end
 
 --- Process mouse movement to allow focus on data points.
